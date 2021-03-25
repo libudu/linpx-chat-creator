@@ -1,0 +1,93 @@
+@tim-blue: rgb(42,124,254);
+@tim-blue-deep: rgb(35, 107, 214);
+@edgesize: 6px;
+	
+.dialog{
+  display: flex;
+  flex-direction: row;
+  margin: 16px 0;
+  
+  .dialog-side{
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 15%;
+    margin: 0 14px;
+  }
+  
+  .dialog-name{
+    color: #888;
+    font-size: 12px;
+    line-height: 14px;
+    margin-top: 2px;
+    margin-bottom: 8px;
+  }
+  
+  .dialog-text{
+    width: max-content;
+    max-width: 66%;
+    font-size: 15px;
+    line-height: 20px;
+    border-radius: 6px;
+    padding: 10px;
+    position: relative;
+    
+    &::before {
+      content: ' ';
+      top: 0;
+      position: absolute;
+      border-top-right-radius: @edgesize / 2;
+      border-left: @edgesize solid transparent;
+      border-right: @edgesize solid transparent;
+      border-bottom: @edgesize solid transparent;
+    }
+  }
+}
+
+.dialog-left{
+  .dialog-text{
+    background-color: white;
+    
+    &::before{
+      left: -@edgesize;
+      border-top: @edgesize solid white;
+      border-top-left-radius: @edgesize / 2;
+    }
+    
+    @hover-color: #ccc;
+    &:active{
+      background-color: @hover-color;
+      
+      &::before{
+        border-top: @edgesize solid @hover-color;
+      }
+    }
+  }
+}
+
+.dialog-right{
+  flex-direction: row-reverse;
+  
+  .dialog-name{
+    text-align: right;
+  }
+  
+  .dialog-text{
+    float: right;
+    color: white;
+    background-color: @tim-blue;
+    
+    &::before{
+      right: -@edgesize;
+      border-top: @edgesize solid @tim-blue;
+    }
+    
+    &:active{
+      background-color: @tim-blue-deep;
+      
+      &::before{
+        border-top: @edgesize solid @tim-blue-deep;
+      }
+    }
+  }
+}

@@ -1,0 +1,80 @@
+.bg-linpx {
+  background-image: linear-gradient(
+    45deg,
+    rgb(236, 115, 55) 0%,
+    rgb(236, 138, 58) 25%,
+    rgb(237, 178, 63) 75%,
+    rgb(238, 199, 65) 100%
+  );
+}
+
+::-webkit-scrollbar {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  width: 0;
+  height: 0;
+}
+
+.show-scrollbar {
+  ::-webkit-scrollbar {
+    overflow-x: hidden;
+    overflow-y: hidden;
+    width: 0;
+    height: 0;
+  }
+}
+
+.bg-center {
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.lp-bgcolor {
+  background-color: rgb(255, 247, 243);
+}
+
+.lp-shadow {
+  border-radius: 0.5rem;
+  box-shadow: 0px 0px 5px #888;
+}
+
+.am-toast-text-info {
+  white-space: pre;
+}
+
+.u-line-1 {
+  -webkit-line-clamp: 1;
+}
+
+.u-line-2 {
+  -webkit-line-clamp: 2;
+}
+
+.u-line-3 {
+  -webkit-line-clamp: 3;
+}
+
+.u-line-4 {
+  -webkit-line-clamp: 4;
+}
+
+.u-line-5 {
+  -webkit-line-clamp: 5;
+}
+
+.u-line-1,
+.u-line-2,
+.u-line-3,
+.u-line-4,
+.u-line-5 {
+  overflow: hidden;
+  word-break: break-all;
+  text-overflow: ellipsis;
+  display: -webkit-box; // 弹性伸缩盒
+  -webkit-box-orient: vertical; // 设置伸缩盒子元素排列方式
+}
+
+body {
+  user-select: none;
+}

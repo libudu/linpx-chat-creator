@@ -37,5 +37,6 @@ export interface IScript {
 }
 
 export interface IChatConfig {
-
+  title: "橘猫的阅读器",
+  subTitle: "114514人在线",
 }

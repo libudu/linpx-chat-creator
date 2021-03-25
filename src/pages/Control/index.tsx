@@ -1,8 +1,8 @@
 import { Tabs, Button } from 'antd-mobile';
-import { Input, Avatar, Switch } from 'antd';
 import classnames from 'classnames';
-import SideImg from '@/assets/test.jpg';
-import { IScript, IRole } from '@/chat/types';
+import { IScript, IContent, IDialog, IRole } from '@/chat/types';
+import CRole from './CRole';
+import { CDialog } from './CContent';
 
 interface IControl{
   className?: any;
@@ -22,54 +22,26 @@ function TabBox({children}:{children:any}){
   );
 }
 
-interface IControlRole{
-  role: IRole;
-  onRoleChange: ()=>any;
-}
-
-function Role({role, onRoleChange}:IControlRole){
-  const { side, name, isMain } = role;
-  return (
-    <div className="flex my-4 text-lg">
-      <div className="mr-4" >
-        <Avatar size={60} src={side}/>
-      </div>
-      <div className="h-8">
-        <Input
-          defaultValue={name}
-          onChange={(e)=>{
-            const newName = e.target.value
-            if(newName !== name) {
-              role.name = newName;
-              onRoleChange();
-            }
-          }}
-        />
-        <div className="flex items-center h-10">
-          <div className="mr-4">靠右</div>
-          <div>
-            <Switch
-              defaultChecked={isMain}
-              onChange={()=>{
-                role.isMain = !isMain;
-                onRoleChange();
-              }}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const tabs = [
   { title: '角色', sub: '1' },
   { title: '对话', sub: '2' },
   { title: '配置', sub: '3' },
 ];
 
+function renderContent(content:IContent, roles:{ [id: string]: IRole}, onContentUpdate:()=>void){
+  // @ts-ignore
+  const { type } = content;
+  // 没有type参数，是对话
+  if(!type) {
+    const dialog = content as IDialog;
+    //console.log(content.from, roles);
+    return <CDialog roles={roles} dialog={dialog} onDialogChange={onContentUpdate} />
+  }
+}
+
 export default function Preview({className, style, script, onScriptUpdate}:IControl){
   const { roles, contents } = script;
+  const content = contents[0];
   return (
     <div className={classnames(className, "bg-white")} style={style}>
       <Tabs tabs={tabs}
@@ -80,15 +52,19 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
         <TabBox>
           {
             Object.values(roles).map(role=>
-              <Role
+              <CRole
                 role={role}
-                onRoleChange={()=>{onScriptUpdate();}}
+                onRoleChange={onScriptUpdate}
               />
             )
           }
           <Button type="ghost" className="w-32" size="small">新建角色</Button>
         </TabBox>
-        <TabBox>新建对话</TabBox>
+        <TabBox>
+          {
+            contents.map(content=>renderContent(content, roles, onScriptUpdate))
+          }
+        </TabBox>
         <TabBox>修改配置</TabBox>
       </Tabs>
     </div>

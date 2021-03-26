@@ -11,7 +11,7 @@ export default function CRole({role, onRoleChange}:IControlRole){
   return (
     <div className="flex my-4 text-lg">
       <div className="mr-4" >
-        <Avatar size={60} src={side}/>
+        <Avatar size={60} src={side} gap={5} >{side}</Avatar>
       </div>
       <div className="h-8">
         <Input

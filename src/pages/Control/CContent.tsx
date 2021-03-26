@@ -1,26 +1,78 @@
-import { IDialog, IRole } from '@/chat/types';
-import { Avatar, Input } from 'antd';
+import { IDialog, IRole, IContent, IScript, IRoleSet } from '@/chat/types';
+import { Avatar, Input, Select } from 'antd';
 
+const { Option } = Select;
 const { TextArea } = Input;
+
+export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:any}){
+  const { roles, contents } = script;
+  // 所有对话的角色选项共用一个options
+  const roleOptions = Object.entries(roles).map(([key, role])=>
+    <Option className="w-30" value={key}>
+      <div className="flex items-center text-base cdialog-rolebox">
+        <div className="flex items-center">
+          <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
+        </div>
+        <div className="ml-2 overflow-ellipsis flex">{role.name}</div>
+      </div>
+    </Option>
+  );
+  return (
+    <div className="w-full">
+      {
+        contents.map(content=>renderContent({
+          content,
+          roles,
+          onContentUpdate:onScriptUpdate,
+          roleOptions,
+        }))
+      }
+    </div>
+  );
+}
+
+interface IRenderContent{
+  content:IContent;
+  roles:IRoleSet;
+  roleOptions:JSX.Element[];
+  onContentUpdate:()=>void;
+}
+export function renderContent({content, roles, onContentUpdate, roleOptions}:IRenderContent){
+  // @ts-ignore
+  const { type } = content;
+  // 没有type参数，是对话
+  if(!type) {
+    const dialog = content as IDialog;
+    //console.log(content.from, roles);
+    return <CDialog roleOptions={roleOptions} roles={roles} dialog={dialog} onDialogChange={onContentUpdate} />
+  }
+  return null;
+}
 
 interface ICDialog{
   dialog: IDialog;
-  roles: { [id: string]: IRole};
+  roles: IRoleSet;
+  roleOptions:JSX.Element[];
   onDialogChange: ()=>any;
 }
 
-
-export function CDialog({dialog, roles, onDialogChange}:ICDialog){
+export function CDialog({dialog, roles, onDialogChange, roleOptions}:ICDialog){
   const { text, from } = dialog;
   const role = roles[from];
   const { name, side } = role;
   return (
     <div className="px-4 py-2 w-full">
-      <div className="flex items-center text-lg">
-        <div className="mr-2"><Avatar size={28} src={side} /></div>
-        <div>{name}</div>
-      </div>
-      <div className="my-2">
+      <Select
+        defaultValue={from}
+        bordered={false}
+        onSelect={(value)=>{
+          dialog.from = value;
+          onDialogChange();
+        }}
+      >
+        {roleOptions}
+      </Select>
+      <div className="my-1">
         <TextArea
           style={{wordBreak: 'break-all'}}
           defaultValue={text}

@@ -26,10 +26,12 @@ export interface IPic {
 
 export type IContent = IDialog | INotice | IPic;
 
+export type IRoleSet = { [id: string]: IRole};
+
 // 脚本
 export interface IScript {
   // 角色信息
-  roles: { [id: string]: IRole};
+  roles: IRoleSet;
   // 对话信息
   contents: IContent[];
   // 配置信息

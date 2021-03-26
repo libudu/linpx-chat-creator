@@ -1,7 +1,5 @@
 import { LeftOutlined, MenuOutlined } from '@ant-design/icons';
 
-
-
 export default function Header(){
   return (
     <div className="w-full flex items-center h-10 text-center text-base">

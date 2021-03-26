@@ -1,7 +1,6 @@
 import Dialog from './Dialog';
 import classnames from 'classnames';
 import Header from './Header';
-import SideImg from '@/assets/test.jpg';
 import { IScript, IContent, IDialog, IRole } from './types';
 
 interface IPreview{

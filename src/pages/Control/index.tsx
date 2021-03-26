@@ -1,8 +1,8 @@
 import { Tabs, Button } from 'antd-mobile';
 import classnames from 'classnames';
-import { IScript, IContent, IDialog, IRole } from '@/chat/types';
+import { IScript } from '@/chat/types';
 import CRole from './CRole';
-import { CDialog } from './CContent';
+import { renderContent, ContentPage } from './CContent';
 
 interface IControl{
   className?: any;
@@ -28,20 +28,8 @@ const tabs = [
   { title: '配置', sub: '3' },
 ];
 
-function renderContent(content:IContent, roles:{ [id: string]: IRole}, onContentUpdate:()=>void){
-  // @ts-ignore
-  const { type } = content;
-  // 没有type参数，是对话
-  if(!type) {
-    const dialog = content as IDialog;
-    //console.log(content.from, roles);
-    return <CDialog roles={roles} dialog={dialog} onDialogChange={onContentUpdate} />
-  }
-}
-
 export default function Preview({className, style, script, onScriptUpdate}:IControl){
   const { roles, contents } = script;
-  const content = contents[0];
   return (
     <div className={classnames(className, "bg-white")} style={style}>
       <Tabs tabs={tabs}
@@ -58,12 +46,24 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
               />
             )
           }
-          <Button type="ghost" className="w-32" size="small">新建角色</Button>
+          <Button
+            type="ghost"
+            className="w-32"
+            size="small"
+            onClick={()=>{
+              const roleList = Object.keys(roles);
+              roles[roleList[roleList.length-1] + 1] = {
+                name: `角色${roleList.length+1}`,
+                side: `角色${roleList.length+1}`,
+              };
+              onScriptUpdate();
+            }}
+          >
+            新建角色
+          </Button>
         </TabBox>
         <TabBox>
-          {
-            contents.map(content=>renderContent(content, roles, onScriptUpdate))
-          }
+          <ContentPage script={script} onScriptUpdate={onScriptUpdate} />
         </TabBox>
         <TabBox>修改配置</TabBox>
       </Tabs>

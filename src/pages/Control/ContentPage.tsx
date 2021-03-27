@@ -1,13 +1,14 @@
-import { IDialog, IContent, IScript, IRoleSet } from '@/chat/types';
+import { IDialog, IContent, IScript, IRoleSet } from '@/pages/Chat/types';
 import { Avatar, Input, Select } from 'antd';
 import { Button } from 'antd-mobile';
 import { DeleteOutlined } from '@ant-design/icons';
 import { getRandomNum } from '@/utils/util';
+import { onScriptUpdate } from '../index';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-export default function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:()=>any}){
+export default function ContentPage({script}:{script:IScript}){
   const { roles, contents } = script;
   // 所有对话的角色选项共用一个options
   const roleOptions = Object.entries(roles).map(([key, role])=>
@@ -37,26 +38,25 @@ export default function ContentPage({script, onScriptUpdate}:{script:IScript, on
   };
   return (
     <>
-        {
-          contents.map((content, index)=>{
-            if(!content.id) content.id = getRandomNum();
-            return (<div className="w-full" key={content.id}>
-                {
-                  renderContent({
-                    content,
-                    roles,
-                    roleOptions,
-                    onContentAdd: ()=>onContentAdd(index),
-                    onContentChange: onScriptUpdate,
-                    onContentDelete: ()=>onContentDelete(content),
-                  })
-                }
-            </div>);
-          })
-        }
+      {
+        contents.map((content, index)=>{
+          if(!content.id) content.id = getRandomNum();
+          return (<div className="w-full" key={content.id}>
+              {
+                renderContent({
+                  content,
+                  roles,
+                  roleOptions,
+                  onContentAdd: ()=>onContentAdd(index),
+                  onContentDelete: ()=>onContentDelete(content),
+                })
+              }
+          </div>);
+        })
+      }
       <Button
         type="ghost"
-        className="w-32 mb-4"
+        className="w-32 my-4"
         size="small"
         onClick={()=>onContentAdd(contents.length)}
       >
@@ -71,12 +71,11 @@ interface IRenderContent{
   roles:IRoleSet;
   roleOptions:JSX.Element[];
   onContentAdd: ()=>void;
-  onContentChange:()=>void;
   onContentDelete:()=>void;
 }
 
 
-export function renderContent({content, roles, roleOptions, onContentAdd, onContentChange, onContentDelete}:IRenderContent){
+export function renderContent({content, roles, roleOptions, onContentAdd, onContentDelete}:IRenderContent){
 
   // @ts-ignore
   const { type } = content;
@@ -88,7 +87,6 @@ export function renderContent({content, roles, roleOptions, onContentAdd, onCont
       <CDialog
         roleOptions={roleOptions} dialog={dialog}
         onContentAdd={onContentAdd}
-        onContentChange={onContentChange}
         onContentDelete={onContentDelete}
       />
     );
@@ -100,11 +98,10 @@ interface ICDialog{
   dialog: IDialog;
   roleOptions:JSX.Element[];
   onContentAdd: ()=>any;
-  onContentChange: ()=>any;
   onContentDelete: ()=>any;
 }
 
-export function CDialog({dialog, roleOptions, onContentAdd, onContentChange, onContentDelete}:ICDialog){
+export function CDialog({dialog, roleOptions, onContentAdd, onContentDelete}:ICDialog){
   const { text, from } = dialog;
   return (
     <div className="px-4 w-full h-full">
@@ -124,7 +121,7 @@ export function CDialog({dialog, roleOptions, onContentAdd, onContentChange, onC
           dropdownMatchSelectWidth={false}
           onSelect={(value)=>{
             dialog.from = value;
-            onContentChange();
+            onScriptUpdate();
           }}
           children={roleOptions}
         />
@@ -142,7 +139,7 @@ export function CDialog({dialog, roleOptions, onContentAdd, onContentChange, onC
           autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(e)=>{
             dialog.text = e.target.value;
-            onContentChange();
+            onScriptUpdate();
           }}
         />
       </div>

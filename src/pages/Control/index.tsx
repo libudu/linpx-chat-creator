@@ -1,6 +1,7 @@
 import { Tabs } from 'antd-mobile';
+import { Button } from 'antd';
 import classnames from 'classnames';
-import { IScript } from '@/chat/types';
+import { IScript } from '@/pages/Chat/types';
 
 import ContentPage from './ContentPage';
 import RolePage from './RolePage';
@@ -12,7 +13,8 @@ interface IControl{
   className?: any;
   style?: any;
   script: IScript;
-  onScriptUpdate: ()=>any;
+  run: boolean;
+  setRun: any;
 }
 
 function TabBox({children}:{children:any}){
@@ -32,25 +34,33 @@ const tabs = [
   { title: '配置与调试', sub: '3' },
 ];
 
-export default function Preview({className, style, script, onScriptUpdate}:IControl){
+export default function Preview({className, style, script,run, setRun}:IControl){
   const { roles, configs } = script;
   return (
-    <div className={classnames(className, "bg-white")} style={style}>
+    <div className={classnames(className, "bg-white relative")} style={style}>
       <Tabs tabs={tabs}
         initialPage={1}
         onChange={(tab, index) => { console.log('onChange', index, tab); }}
         onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
       >
         <TabBox>
-          <RolePage roles={roles} onScriptUpdate={onScriptUpdate}  />
+          <RolePage roles={roles} />
         </TabBox>
         <TabBox>
-          <ContentPage script={script} onScriptUpdate={onScriptUpdate} />
+          <ContentPage script={script} />
         </TabBox>
         <TabBox>
-          <ConfigPage configs={configs} onConfigUpdate={onScriptUpdate} />
+          <ConfigPage configs={configs} />
         </TabBox>
       </Tabs>
+      {
+        run &&
+        <div className="absolute w-full h-full z-50 bg-black bg-opacity-50 top-0 flex items-center justify-center">
+          <Button className="w-32" type="primary" danger size="large" onClick={()=>setRun(false)}>
+            结束运行
+          </Button>
+        </div>
+      }
     </div>
   );
 }

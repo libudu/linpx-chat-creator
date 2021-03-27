@@ -1,4 +1,4 @@
-import { IScript } from '../chat/types';
+import { IScript } from './Chat/types';
 import SideImg from '@/assets/test.jpg';
 
 const Script:IScript = {
@@ -34,7 +34,7 @@ const Script:IScript = {
   configs: {
     title: "橘猫的阅读器",
     subTitle: "114514人在线",
-    defaultDelay: 3,
+    defaultDelay: 1,
   }
 }
 

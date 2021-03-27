@@ -1,13 +1,13 @@
-import { IConfig } from '@/chat/types';
+import { IConfig } from '@/pages/Chat/types';
 import { Input, InputNumber, Button } from 'antd';
 import { delay } from 'lodash';
+import { setRun, onScriptUpdate } from '../index';
 
 interface IConfigPage{
   configs: IConfig;
-  onConfigUpdate: ()=>any;
 }
 
-export default function ConfigPage({ configs, onConfigUpdate }: IConfigPage){
+export default function ConfigPage({ configs }: IConfigPage){
   const { defaultDelay } = configs;
   const InputEle = (key:string, name:string)=>{
     // @ts-ignore
@@ -20,7 +20,7 @@ export default function ConfigPage({ configs, onConfigUpdate }: IConfigPage){
       onChange={(e)=>{
         // @ts-ignore
         configs[key] = e.target.value;
-        onConfigUpdate();
+        onScriptUpdate();
       }}
     />
   };
@@ -40,13 +40,13 @@ export default function ConfigPage({ configs, onConfigUpdate }: IConfigPage){
           min={0} max={100} step={0.1} precision={2}
           onChange={(e)=>{
             configs.defaultDelay = e;
-            onConfigUpdate();
+            onScriptUpdate();
           }}
         />
       </div>
       
       <div className="flex justify-center my-8">
-        <Button type="primary">开始运行</Button>
+        <Button type="primary" onClick={()=>setRun(true)}>开始运行</Button>
       </div>
     </div>
   );

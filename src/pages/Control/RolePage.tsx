@@ -1,14 +1,14 @@
 import { Input, Avatar, Switch } from 'antd';
-import { IRole } from '@/chat/types';
+import { IRole } from '@/pages/Chat/types';
 import { Button } from 'antd-mobile';
-import { IRoleSet } from '@/chat/types';
+import { IRoleSet } from '@/pages/Chat/types';
+import { onScriptUpdate } from '../index';
 
 interface IRolePage{
   roles: IRoleSet;
-  onScriptUpdate: ()=>{};
 }
 
-export default function RolePage({ roles, onScriptUpdate }:IRolePage) {
+export default function RolePage({ roles }:IRolePage) {
   return (
     <>
       {

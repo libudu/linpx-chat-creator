@@ -1,12 +1,50 @@
 import { Input, Avatar, Switch } from 'antd';
 import { IRole } from '@/chat/types';
+import { Button } from 'antd-mobile';
+import { IRoleSet } from '@/chat/types';
 
-interface IControlRole{
+interface IRolePage{
+  roles: IRoleSet;
+  onScriptUpdate: ()=>{};
+}
+
+export default function RolePage({ roles, onScriptUpdate }:IRolePage) {
+  return (
+    <>
+      {
+        Object.entries(roles).map(([id, role])=>
+          <CRole
+            key={id}
+            role={role}
+            onRoleChange={onScriptUpdate}
+          />
+        )
+      }
+      <Button
+        type="ghost"
+        className="w-32"
+        size="small"
+        onClick={()=>{
+          const roleList = Object.keys(roles);
+          roles[roleList[roleList.length-1] + 1] = {
+            name: `角色${roleList.length+1}`,
+            side: `角色${roleList.length+1}`,
+          };
+          onScriptUpdate();
+        }}
+      >
+        新建角色
+      </Button>
+    </>
+  );
+}
+
+interface ICRole{
   role: IRole;
   onRoleChange: ()=>any;
 }
 
-export default function CRole({role, onRoleChange}:IControlRole){
+export function CRole({role, onRoleChange}:ICRole){
   const { side, name, isMain } = role;
   return (
     <div className="flex my-4 text-lg">

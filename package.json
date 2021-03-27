@@ -27,6 +27,7 @@
     "antd-mobile": "^2.3.4",
     "classnames": "^2.2.6",
     "lodash": "^4.17.21",
+    "react-transition-group": "^4.4.1",
     "umi": "^3.4.2",
     "umi-plugin-tailwindcss": "^3.0.3"
   },
@@ -35,6 +36,7 @@
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-transition-group": "^4.4.1",
     "@umijs/test": "^3.4.2",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.0",

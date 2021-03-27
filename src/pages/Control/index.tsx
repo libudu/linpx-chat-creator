@@ -2,8 +2,9 @@ import { Tabs, Button } from 'antd-mobile';
 import classnames from 'classnames';
 import { IScript } from '@/chat/types';
 
-import { ContentPage } from './CContent';
-import CRole from './CRole';
+import ContentPage from './ContentPage';
+import RolePage from './RolePage';
+import ConfigPage from './ConfigPage';
 
 import "./index.less";
 
@@ -28,7 +29,7 @@ function TabBox({children}:{children:any}){
 const tabs = [
   { title: '角色', sub: '1' },
   { title: '对话', sub: '2' },
-  { title: '配置', sub: '3' },
+  { title: '配置与调试', sub: '3' },
 ];
 
 export default function Preview({className, style, script, onScriptUpdate}:IControl){
@@ -41,35 +42,14 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
         onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
       >
         <TabBox>
-          {
-            Object.entries(roles).map(([id, role])=>
-              <CRole
-                key={id}
-                role={role}
-                onRoleChange={onScriptUpdate}
-              />
-            )
-          }
-          <Button
-            type="ghost"
-            className="w-32"
-            size="small"
-            onClick={()=>{
-              const roleList = Object.keys(roles);
-              roles[roleList[roleList.length-1] + 1] = {
-                name: `角色${roleList.length+1}`,
-                side: `角色${roleList.length+1}`,
-              };
-              onScriptUpdate();
-            }}
-          >
-            新建角色
-          </Button>
+          <RolePage roles={roles} onScriptUpdate={onScriptUpdate}  />
         </TabBox>
         <TabBox>
           <ContentPage script={script} onScriptUpdate={onScriptUpdate} />
         </TabBox>
-        <TabBox>修改配置</TabBox>
+        <TabBox>
+          <ConfigPage />
+        </TabBox>
       </Tabs>
     </div>
   );

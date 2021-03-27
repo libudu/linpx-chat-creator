@@ -3,11 +3,24 @@ import { Avatar, Input, Select } from 'antd';
 import { Button } from 'antd-mobile';
 import { DeleteOutlined } from '@ant-design/icons';
 import { getRandomNum } from '@/utils/util';
+import { useRef } from 'react';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:()=>any}){
+
+function Test({children}:{children:any}){
+  const ref = useRef<HTMLDivElement>(null);
+  return (
+    <div className="relative w-full" style={{height: `${ref.current?.offsetHeight}px`}}>
+      <div className="absolute w-full" ref={ref}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:()=>any}){
   const { roles, contents } = script;
   // 所有对话的角色选项共用一个options
   const roleOptions = Object.entries(roles).map(([key, role])=>
@@ -32,21 +45,28 @@ export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUp
     contents.splice(index, 0, {
       from: Object.keys(roles)[0],
       text: "默认对话",
-    })
+    });
     onScriptUpdate();
   };
   return (
     <>
-      {
-        contents.map((content, index)=>renderContent({
-          content,
-          roles,
-          roleOptions,
-          onContentAdd: ()=>onContentAdd(index),
-          onContentChange: onScriptUpdate,
-          onContentDelete: ()=>onContentDelete(content),
-        }))
-      }
+        {
+          contents.map((content, index)=>{
+            if(!content.id) content.id = getRandomNum();
+            return (<div className="w-full" key={content.id}>
+                {
+                  renderContent({
+                    content,
+                    roles,
+                    roleOptions,
+                    onContentAdd: ()=>onContentAdd(index),
+                    onContentChange: onScriptUpdate,
+                    onContentDelete: ()=>onContentDelete(content),
+                  })
+                }
+            </div>);
+          })
+        }
       <Button
         type="ghost"
         className="w-32 mb-4"
@@ -68,17 +88,18 @@ interface IRenderContent{
   onContentDelete:()=>void;
 }
 
+
 export function renderContent({content, roles, roleOptions, onContentAdd, onContentChange, onContentDelete}:IRenderContent){
-  if(!content.id) content.id = getRandomNum();
+
   // @ts-ignore
-  const { type, from, id } = content;
+  const { type } = content;
   // 没有type参数，是对话
   if(!type) {
     const dialog = content as IDialog;
     //console.log(content.from, roles);
     return (
       <CDialog
-        key={id} roleOptions={roleOptions} dialog={dialog}
+        roleOptions={roleOptions} dialog={dialog}
         onContentAdd={onContentAdd}
         onContentChange={onContentChange}
         onContentDelete={onContentDelete}
@@ -99,7 +120,7 @@ interface ICDialog{
 export function CDialog({dialog, roleOptions, onContentAdd, onContentChange, onContentDelete}:ICDialog){
   const { text, from } = dialog;
   return (
-    <div className="px-4 w-full">
+    <div className="px-4 w-full h-full">
       <div className="h-6 mt-1 flex flex-col justify-center items-center relative lp-content-add">
         <div className="bg-gray-300 w-full absolute" style={{height: '1px'}} />
         <div

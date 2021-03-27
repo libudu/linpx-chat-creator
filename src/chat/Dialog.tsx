@@ -16,8 +16,12 @@ export default function Dialog({name, side, text, isRight=false, showName=true}:
       <Avatar size={40} src={side}>{side}</Avatar>
     </div>
     <div className="w-full">
-      <div className="dialog-name">{ showName && name}</div>
-      <div className="dialog-text">{text}</div>
+      <div className="dialog-name u-line-1">
+        <div className="dialog-name-wrapper">
+          { showName && name}
+        </div>
+      </div>
+      <div className="dialog-text">{ text || " " }</div>
     </div>
   </div>
   );

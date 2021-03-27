@@ -33,7 +33,7 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
   return (
     <div className={classnames(className, "bg-white")} style={style}>
       <Tabs tabs={tabs}
-        initialPage={0}
+        initialPage={1}
         onChange={(tab, index) => { console.log('onChange', index, tab); }}
         onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
       >

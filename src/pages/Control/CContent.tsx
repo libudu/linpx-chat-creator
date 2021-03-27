@@ -14,7 +14,7 @@ export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUp
         <div className="flex items-center">
           <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
         </div>
-        <div className="ml-2 flex">{role.name}</div>
+        <div className="ml-2 flex u-line-1" style={{maxWidth: "150px"}}>{role.name}</div>
       </div>
     </Option>
   );

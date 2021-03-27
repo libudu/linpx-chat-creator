@@ -15,6 +15,7 @@ export default function CRole({role, onRoleChange}:IControlRole){
       </div>
       <div className="h-8">
         <Input
+          maxLength={40}
           defaultValue={name}
           onChange={(e)=>{
             const newName = e.target.value

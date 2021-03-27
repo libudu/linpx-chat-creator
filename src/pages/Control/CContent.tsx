@@ -1,5 +1,6 @@
-import { IDialog, IRole, IContent, IScript, IRoleSet } from '@/chat/types';
+import { IDialog, IContent, IScript, IRoleSet } from '@/chat/types';
 import { Avatar, Input, Select } from 'antd';
+import { Button } from 'antd-mobile';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -8,17 +9,17 @@ export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUp
   const { roles, contents } = script;
   // 所有对话的角色选项共用一个options
   const roleOptions = Object.entries(roles).map(([key, role])=>
-    <Option className="w-30" value={key}>
+    <Option value={key}>
       <div className="flex items-center text-base cdialog-rolebox">
         <div className="flex items-center">
           <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
         </div>
-        <div className="ml-2 overflow-ellipsis flex">{role.name}</div>
+        <div className="ml-2 flex">{role.name}</div>
       </div>
     </Option>
   );
   return (
-    <div className="w-full">
+    <>
       {
         contents.map(content=>renderContent({
           content,
@@ -27,7 +28,22 @@ export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUp
           roleOptions,
         }))
       }
-    </div>
+      <Button
+        type="ghost"
+        className="w-32 mb-4"
+        size="small"
+        onClick={()=>{
+          const defaultDialog:IDialog = {
+            from: Object.keys(roles)[0],
+            text: "默认对话",
+          }
+          contents.push(defaultDialog);
+          onScriptUpdate();
+        }}
+      >
+        新建对话
+      </Button>
+    </>
   );
 }
 
@@ -65,6 +81,8 @@ export function CDialog({dialog, roles, onDialogChange, roleOptions}:ICDialog){
       <Select
         defaultValue={from}
         bordered={false}
+        dropdownStyle={{width:'max-content'}}
+        dropdownMatchSelectWidth={false}
         onSelect={(value)=>{
           dialog.from = value;
           onDialogChange();

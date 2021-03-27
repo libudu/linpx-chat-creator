@@ -13,7 +13,7 @@ export default function Dialog({name, side, text, isRight=false, showName=true}:
   return (
   <div className={"dialog " + (isRight ? "dialog-right" : "dialog-left")}>
     <div className="dialog-side">
-      <Avatar size={40} src={side} />
+      <Avatar size={40} src={side}>{side}</Avatar>
     </div>
     <div className="w-full">
       <div className="dialog-name">{ showName && name}</div>

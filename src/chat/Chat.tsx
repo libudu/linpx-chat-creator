@@ -2,6 +2,7 @@ import Dialog from './Dialog';
 import classnames from 'classnames';
 import Header from './Header';
 import { IScript, IContent, IDialog, IRole } from './types';
+import { getRandomNum } from '@/utils/util';
 
 interface IPreview{
   className?: any
@@ -10,14 +11,16 @@ interface IPreview{
 }
 
 function renderContent(content:IContent, roles:{ [id: string]: IRole}){
+  // 还没id则生成id
+  if(!content.id) content.id = getRandomNum();
   // @ts-ignore
   const { type } = content;
   // 没有type参数，是对话
   if(!type) {
-    content = content as IDialog;
-    const role = roles[content.from];
+    const { text, from, id } = content as IDialog;
+    const { name, side, isMain } = roles[from];
     //console.log(content.from, roles);
-    return <Dialog name={role.name} side={role.side} text={content.text} isRight={role.isMain} />
+    return <Dialog key={id} name={name} side={side} text={text} isRight={isMain} />
   }
 }
 

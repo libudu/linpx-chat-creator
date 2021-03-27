@@ -1,15 +1,17 @@
 import { IDialog, IContent, IScript, IRoleSet } from '@/chat/types';
 import { Avatar, Input, Select } from 'antd';
 import { Button } from 'antd-mobile';
+import { DeleteOutlined } from '@ant-design/icons';
+import { getRandomNum } from '@/utils/util';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:any}){
+export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:()=>any}){
   const { roles, contents } = script;
   // 所有对话的角色选项共用一个options
   const roleOptions = Object.entries(roles).map(([key, role])=>
-    <Option value={key}>
+    <Option value={key} key={key}>
       <div className="flex items-center text-base cdialog-rolebox">
         <div className="flex items-center">
           <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
@@ -18,28 +20,38 @@ export function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUp
       </div>
     </Option>
   );
+  // 共用一个删除内容函数
+  const onContentDelete = (content:IContent)=>{
+    const index = contents.indexOf(content);
+    if(index < 0) throw Error('要删除的对话不在对话列表中');
+    contents.splice(index, 1);
+    onScriptUpdate();
+  };
+  // 共用一个添加内容函数
+  const onContentAdd = (index:number)=>{
+    contents.splice(index, 0, {
+      from: Object.keys(roles)[0],
+      text: "默认对话",
+    })
+    onScriptUpdate();
+  };
   return (
     <>
       {
-        contents.map(content=>renderContent({
+        contents.map((content, index)=>renderContent({
           content,
           roles,
-          onContentUpdate:onScriptUpdate,
           roleOptions,
+          onContentAdd: ()=>onContentAdd(index),
+          onContentChange: onScriptUpdate,
+          onContentDelete: ()=>onContentDelete(content),
         }))
       }
       <Button
         type="ghost"
         className="w-32 mb-4"
         size="small"
-        onClick={()=>{
-          const defaultDialog:IDialog = {
-            from: Object.keys(roles)[0],
-            text: "默认对话",
-          }
-          contents.push(defaultDialog);
-          onScriptUpdate();
-        }}
+        onClick={()=>onContentAdd(contents.length)}
       >
         新建对话
       </Button>
@@ -51,45 +63,70 @@ interface IRenderContent{
   content:IContent;
   roles:IRoleSet;
   roleOptions:JSX.Element[];
-  onContentUpdate:()=>void;
+  onContentAdd: ()=>void;
+  onContentChange:()=>void;
+  onContentDelete:()=>void;
 }
-export function renderContent({content, roles, onContentUpdate, roleOptions}:IRenderContent){
+
+export function renderContent({content, roles, roleOptions, onContentAdd, onContentChange, onContentDelete}:IRenderContent){
+  if(!content.id) content.id = getRandomNum();
   // @ts-ignore
-  const { type } = content;
+  const { type, from, id } = content;
   // 没有type参数，是对话
   if(!type) {
     const dialog = content as IDialog;
     //console.log(content.from, roles);
-    return <CDialog roleOptions={roleOptions} roles={roles} dialog={dialog} onDialogChange={onContentUpdate} />
+    return (
+      <CDialog
+        key={id} roleOptions={roleOptions} dialog={dialog}
+        onContentAdd={onContentAdd}
+        onContentChange={onContentChange}
+        onContentDelete={onContentDelete}
+      />
+    );
   }
   return null;
 }
 
 interface ICDialog{
   dialog: IDialog;
-  roles: IRoleSet;
   roleOptions:JSX.Element[];
-  onDialogChange: ()=>any;
+  onContentAdd: ()=>any;
+  onContentChange: ()=>any;
+  onContentDelete: ()=>any;
 }
 
-export function CDialog({dialog, roles, onDialogChange, roleOptions}:ICDialog){
+export function CDialog({dialog, roleOptions, onContentAdd, onContentChange, onContentDelete}:ICDialog){
   const { text, from } = dialog;
-  const role = roles[from];
-  const { name, side } = role;
   return (
-    <div className="px-4 py-2 w-full">
-      <Select
-        defaultValue={from}
-        bordered={false}
-        dropdownStyle={{width:'max-content'}}
-        dropdownMatchSelectWidth={false}
-        onSelect={(value)=>{
-          dialog.from = value;
-          onDialogChange();
-        }}
-      >
-        {roleOptions}
-      </Select>
+    <div className="px-4 w-full">
+      <div className="h-6 mt-1 flex flex-col justify-center items-center relative lp-content-add">
+        <div className="bg-gray-300 w-full absolute" style={{height: '1px'}} />
+        <div
+          className="absolute w-5 h-5 flex items-center justify-between lp-content-add-icon z-20"
+          onClick={onContentAdd}
+        />
+        <span className="mb-1 text-xl z-10">+</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <Select
+          defaultValue={from}
+          bordered={false}
+          dropdownStyle={{width:'max-content'}}
+          dropdownMatchSelectWidth={false}
+          onSelect={(value)=>{
+            dialog.from = value;
+            onContentChange();
+          }}
+          children={roleOptions}
+        />
+        <div
+          className="text-lg mr-2 lp-delete-icon flex items-center justify-center p-1"
+          onClick={onContentDelete}
+        >
+          <DeleteOutlined />
+        </div>
+      </div>
       <div className="my-1">
         <TextArea
           style={{wordBreak: 'break-all'}}
@@ -97,7 +134,7 @@ export function CDialog({dialog, roles, onDialogChange, roleOptions}:ICDialog){
           autoSize={{ minRows: 1, maxRows: 3 }}
           onChange={(e)=>{
             dialog.text = e.target.value;
-            onDialogChange();
+            onContentChange();
           }}
         />
       </div>

@@ -1,8 +1,11 @@
 import { Tabs, Button } from 'antd-mobile';
 import classnames from 'classnames';
 import { IScript } from '@/chat/types';
+
+import { ContentPage } from './CContent';
 import CRole from './CRole';
-import { renderContent, ContentPage } from './CContent';
+
+import "./index.less";
 
 interface IControl{
   className?: any;
@@ -39,8 +42,9 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
       >
         <TabBox>
           {
-            Object.values(roles).map(role=>
+            Object.entries(roles).map(([id, role])=>
               <CRole
+                key={id}
                 role={role}
                 onRoleChange={onScriptUpdate}
               />

@@ -26,20 +26,18 @@ function renderContent(content:IContent, roles:{ [id: string]: IRole}){
 
 
 export default function Preview({script, className, style}:IPreview){
-  const { roles, contents } = script;
+  const { roles, contents, configs } = script;
+  const { title, subTitle } = configs;
 
   return (
-    <div className={classnames(className, 'bg-gray-100 h-full flex flex-col')} style={style}>
-      <Header />
-      <div className="h-full flex flex-col">
-        <div className="flex-grow overflow-y-scroll h-16">
-          {
-            contents.map(ele=>renderContent(ele, roles))
-          }
-        </div>
-        <div className="h-12 bg-white flex-shrink-0">
-
-        </div>
+    <div className={classnames(className, 'bg-gray-100 h-full w-full relative')} style={style}>
+      <Header title={title} subTitle={subTitle} />
+      <div className="h-full pt-10 pb-12 flex-grow-0 flex flex-col overflow-y-scroll">
+        {
+          contents.map(ele=>renderContent(ele, roles))
+        }
+      </div>
+      <div className="absolute w-full h-12 bg-white" style={{bottom: "0"}}>
       </div>
     </div>
   );

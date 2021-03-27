@@ -1,4 +1,4 @@
-import { Tabs, Button } from 'antd-mobile';
+import { Tabs } from 'antd-mobile';
 import classnames from 'classnames';
 import { IScript } from '@/chat/types';
 
@@ -19,7 +19,7 @@ function TabBox({children}:{children:any}){
   return (
     <div
       className="flex flex-col justify-center items-center"
-      style={{ height: 'max-content', minHeight: '200px' }}
+      style={{ height: 'max-content'}}
     >
       {children}
     </div>
@@ -33,7 +33,7 @@ const tabs = [
 ];
 
 export default function Preview({className, style, script, onScriptUpdate}:IControl){
-  const { roles, contents } = script;
+  const { roles, configs } = script;
   return (
     <div className={classnames(className, "bg-white")} style={style}>
       <Tabs tabs={tabs}
@@ -48,7 +48,7 @@ export default function Preview({className, style, script, onScriptUpdate}:ICont
           <ContentPage script={script} onScriptUpdate={onScriptUpdate} />
         </TabBox>
         <TabBox>
-          <ConfigPage />
+          <ConfigPage configs={configs} onConfigUpdate={onScriptUpdate} />
         </TabBox>
       </Tabs>
     </div>

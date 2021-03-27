@@ -3,22 +3,9 @@ import { Avatar, Input, Select } from 'antd';
 import { Button } from 'antd-mobile';
 import { DeleteOutlined } from '@ant-design/icons';
 import { getRandomNum } from '@/utils/util';
-import { useRef } from 'react';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-
-function Test({children}:{children:any}){
-  const ref = useRef<HTMLDivElement>(null);
-  return (
-    <div className="relative w-full" style={{height: `${ref.current?.offsetHeight}px`}}>
-      <div className="absolute w-full" ref={ref}>
-        {children}
-      </div>
-    </div>
-  );
-}
 
 export default function ContentPage({script, onScriptUpdate}:{script:IScript, onScriptUpdate:()=>any}){
   const { roles, contents } = script;

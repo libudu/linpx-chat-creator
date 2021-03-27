@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { throttle } from 'lodash';
 
 export default function IndexPage() {
+  // 脚本数据
   const [script, setScript] = useState(defaultScript);
   // 最快每隔100ms才刷新一次界面
   const onScriptUpdate = throttle(()=>{

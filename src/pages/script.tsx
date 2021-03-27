@@ -31,6 +31,11 @@ const Script:IScript = {
       text: '很好',
     },
   ],
+  configs: {
+    title: "橘猫的阅读器",
+    subTitle: "114514人在线",
+    defaultDelay: 3,
+  }
 }
 
 export default Script;

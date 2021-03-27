@@ -5,25 +5,27 @@ export interface IRole {
   isMain?: boolean;
 }
 
+
+export interface IContentBase {
+  id?: string | number; // 用于渲染时生成标记
+  delay?: number;
+}
 // 对话
-export interface IDialog {
+export interface IDialog extends IContentBase {
   from: string;
   text: string;
   showName?: boolean;
-  id?: string | number; // 用于渲染时生成标记
 }
 
-export interface INotice {
+export interface INotice extends IContentBase {
   type: 'notice';
   text: string;
-  id?: string | number; // 用于渲染时生成标记
 }
 
-export interface IPic {
+export interface IPic extends IContentBase {
   type: 'img';
   src: string;
   display: string;
-  id?: string | number; // 用于渲染时生成标记
 }
 
 
@@ -38,10 +40,11 @@ export interface IScript {
   // 对话信息
   contents: IContent[];
   // 配置信息
-  //configs: IChatConfig;
+  configs: IConfig;
 }
 
-export interface IChatConfig {
-  title: "橘猫的阅读器",
-  subTitle: "114514人在线",
+export interface IConfig {
+  title: string,
+  subTitle: string,
+  defaultDelay: number,
 }

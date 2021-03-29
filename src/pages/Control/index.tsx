@@ -39,7 +39,7 @@ export default function Preview({className, style, script,run, setRun}:IControl)
   return (
     <div className={classnames(className, "bg-white relative")} style={style}>
       <Tabs tabs={tabs}
-        initialPage={1}
+        initialPage={2}
         onChange={(tab, index) => { console.log('onChange', index, tab); }}
         onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
       >

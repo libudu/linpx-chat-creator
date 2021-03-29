@@ -1,5 +1,5 @@
-import { IDialog, IContent, IScript, IRoleSet } from '@/pages/Chat/types';
-import { Avatar, Input, Select } from 'antd';
+import { IDialog, IContent, IScript, IRoleSet, IConfig } from '@/pages/Chat/types';
+import { Avatar, Input, Select, InputNumber } from 'antd';
 import { Button } from 'antd-mobile';
 import { DeleteOutlined } from '@ant-design/icons';
 import { getRandomNum } from '@/utils/util';
@@ -7,9 +7,11 @@ import { onScriptUpdate } from '../index';
 
 const { Option } = Select;
 const { TextArea } = Input;
+let _configs:IConfig;
 
 export default function ContentPage({script}:{script:IScript}){
-  const { roles, contents } = script;
+  const { roles, contents, configs } = script;
+  _configs = configs;
   // 所有对话的角色选项共用一个options
   const roleOptions = Object.entries(roles).map(([key, role])=>
     <Option value={key} key={key}>
@@ -17,7 +19,7 @@ export default function ContentPage({script}:{script:IScript}){
         <div className="flex items-center">
           <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
         </div>
-        <div className="ml-2 flex u-line-1" style={{maxWidth: "150px"}}>{role.name}</div>
+        <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{role.name}</div>
       </div>
     </Option>
   );
@@ -102,7 +104,9 @@ interface ICDialog{
 }
 
 export function CDialog({dialog, roleOptions, onContentAdd, onContentDelete}:ICDialog){
+  const { defaultDelay } = _configs;
   const { text, from } = dialog;
+  if(!dialog.delay) dialog.delay = _configs.defaultDelay;
   return (
     <div className="px-4 w-full h-full">
       <div className="h-6 mt-1 flex flex-col justify-center items-center relative lp-content-add">
@@ -114,19 +118,34 @@ export function CDialog({dialog, roleOptions, onContentAdd, onContentDelete}:ICD
         <span className="mb-1 text-xl z-10">+</span>
       </div>
       <div className="flex items-center justify-between">
-        <Select
-          defaultValue={from}
-          bordered={false}
-          dropdownStyle={{width:'max-content'}}
-          dropdownMatchSelectWidth={false}
-          onSelect={(value)=>{
-            dialog.from = value;
-            onScriptUpdate();
-          }}
-          children={roleOptions}
-        />
+        <div style={{width: '51%'}}>
+          <Select
+            defaultValue={from}
+            bordered={false}
+            dropdownStyle={{width:'max-content'}}
+            dropdownMatchSelectWidth={false}
+            onSelect={(value)=>{
+              dialog.from = value;
+              onScriptUpdate();
+            }}
+            children={roleOptions}
+          />
+        </div>
+        <div className="flex items-center" >
+          <span className="ml-2 w-8">延迟</span>
+          <InputNumber
+            style={{width: "70px"}}
+            size={'small'}
+            defaultValue={defaultDelay}
+            min={0} max={100} step={0.1} precision={2}
+            onChange={(e)=>{
+              dialog.delay = e;
+              onScriptUpdate();
+            }}
+          />
+        </div>
         <div
-          className="text-lg mr-2 lp-delete-icon flex items-center justify-center p-1"
+          className="text-lg lp-delete-icon flex items-center justify-center p-1"
           onClick={onContentDelete}
         >
           <DeleteOutlined />

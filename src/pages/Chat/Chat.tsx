@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import Header from './Header';
 import { IScript, IContent, IDialog, IRole, IRoleSet } from './types';
 import { getRandomNum } from '@/utils/util';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   CSSTransition,
   TransitionGroup,
@@ -30,22 +30,25 @@ function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
   return <Dialog key={id} name={name} side={side} text={text} isRight={isMain} />
 }
 
-function RenderContentList({contents, roles}:{contents:IContent[], roles:IRoleSet}){
+function RenderContentList({contents, roles, scrollRef, bottomRef}:
+  {contents:IContent[], roles:IRoleSet, scrollRef?:any, bottomRef?:any})
+{
   return (
-    <TransitionGroup className="h-full w-full overflow-y-scroll">
-      {
-        contents.map(content=>{
-          if(!content.id) content.id = getRandomNum();
-          content = content as IDialog;
-          const isRight = roles[content.from].isMain;
-          return (<CSSTransition
-            key={content.id}
-            timeout={500}
-            classNames={isRight ? 'item-right' : 'item'}
-            children={<RenderContent content={content} roles={roles} />}
-          />);
-        })
-      }
+    <TransitionGroup className="w-full">
+        {
+          contents.map(content=>{
+            if(!content.id) content.id = getRandomNum();
+            content = content as IDialog;
+            const isRight = roles[content.from].isMain;
+            return (<CSSTransition
+              key={content.id}
+              timeout={500}
+              classNames={isRight ? 'item-right' : 'item'}
+              children={<RenderContent content={content} roles={roles} />}
+            />);
+          })
+        }
+        <div className="h-0" ref={bottomRef}></div>
     </TransitionGroup>
   );
 }
@@ -75,6 +78,9 @@ function RunPreview({script}:{script:IScript}){
   const { contents, roles, configs } = script;
   const [nowContents, setNowContents] = useState<IContent[]>([]);
   const [index, setIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
   useEffect(()=>{
     //console.log('run step!');
     const content = contents[index];
@@ -83,12 +89,13 @@ function RunPreview({script}:{script:IScript}){
     const id = setTimeout(()=>{
       nowContents.push(contents[index]);
       setIndex(index + 1);
+      bottomRef.current?.scrollIntoView({behavior: 'smooth'});
     }, delay * 1000);
     return ()=>clearTimeout(id);
   }, [index]);
   return (
-    <div className="w-full h-full">
-      <RenderContentList roles={roles} contents={nowContents} />
+    <div className="w-full h-full overflow-y-scroll">
+      <RenderContentList roles={roles} contents={nowContents} bottomRef={bottomRef} />
     </div>
   );
 }

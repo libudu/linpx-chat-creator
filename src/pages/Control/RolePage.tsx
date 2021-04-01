@@ -3,6 +3,7 @@ import { IRole } from '@/pages/Chat/types';
 import { Button } from 'antd-mobile';
 import { IRoleSet } from '@/pages/Chat/types';
 import { onScriptUpdate } from '../index';
+import { showSelectSide } from './index';
 
 interface IRolePage{
   roles: IRoleSet;
@@ -48,7 +49,15 @@ export function CRole({role, onRoleChange}:ICRole){
   const { side, name, isMain } = role;
   return (
     <div className="flex my-4 text-lg">
-      <div className="mr-4" >
+      <div
+        className="mr-4"
+        onClick={()=>{
+          showSelectSide((src)=>{
+            role.side = src;
+            onScriptUpdate();
+          })
+        }}
+      >
         <Avatar size={60} src={side} gap={5} >{side}</Avatar>
       </div>
       <div className="h-8">

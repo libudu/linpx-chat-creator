@@ -62,16 +62,15 @@ export default function SelectSide({ onSelect, onCancel }: ISelectSide){
               accept={"image/png, image/jpeg, image/gif"}
               beforeUpload={beforeUpload}
               onChange={(info)=>{
+                console.log('change!', info)
                 const file = info.file;
-                if(file.status === 'done'){
-                  const img = file.originFileObj;
-                  const reader = new FileReader();
-                  reader.addEventListener('load', () => {
-                    const imageUrl = reader.result;
-                    setUploadImg(imageUrl);
-                  });
-                  reader.readAsDataURL(img);
-                }
+                const img = file.originFileObj;
+                const reader = new FileReader();
+                reader.addEventListener('load', () => {
+                  const imageUrl = reader.result;
+                  setUploadImg(imageUrl);
+                });
+                reader.readAsDataURL(img);
               }}
             >
               {

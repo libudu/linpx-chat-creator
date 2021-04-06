@@ -16,11 +16,11 @@ const Script:IScript = {
   contents: [
     {
       from: '1',
-      text: `学长你好，那个……在吗？\n\n\n\n\n\n\n\n\n`,
+      text: `学长你好，那个……在吗？`,
     },
     {
       from: '2',
-      text: '啊，在的，有什么事吗\n\n\n\n\n\n\n\n\n',
+      text: '啊，在的，有什么事吗',
     },
     {
       from: '1',

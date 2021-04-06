@@ -5,17 +5,18 @@ import { useState } from 'react';
 import { throttle } from 'lodash';
 
 export let setRun:(arg0:boolean)=>void;
-export let onScriptUpdate:()=>void;
+let _setScript:any;
+export let onScriptUpdate = throttle(()=>_setScript(), 200);
 
 export default function IndexPage() {
   const [run, _setRun] = useState(false);
   setRun = _setRun;
+
   // 脚本数据
   const [script, setScript] = useState(defaultScript);
-  // 最快每隔100ms才刷新一次界面
-  onScriptUpdate = throttle(()=>{
-    setScript(Object.assign({}, script));
-  }, 100, { 'leading': false });
+  
+  _setScript = () => setScript(Object.assign({}, script));
+
   return (
     <div className="flex justify-center items-center h-screen overflow-scroll">
       <div className="flex flex-row h-screen py-10">

@@ -1,19 +1,17 @@
 import { Tabs } from 'antd-mobile';
-import { Button, Avatar } from 'antd';
+import { Button } from 'antd';
 import classnames from 'classnames';
-import { IScript } from '@/pages/Chat/types';
+import { IScript, IRole } from '@/pages/Chat/types';
 
 import ContentPage from './ContentPage';
 import RolePage from './RolePage';
 import ConfigPage from './ConfigPage';
+import SelectSide from './components/SelectSide';
 
 import "./index.less";
 import { useState } from 'react';
+import { onScriptUpdate } from '..';
 
-let defaultSides:any[] = [];
-for(let i=1; i <= 12; i++){
-  defaultSides.push(require(`@/assets/defaultSides/${i}.jpg`));
-}
 
 interface IControl{
   className?: any;
@@ -40,17 +38,22 @@ const tabs = [
   { title: '配置与调试', sub: '3' },
 ];
 
-export let showSelectSide:(callback:(src:any)=>any)=>any;
-let selectSideCallback: (src:any)=>any;
+let selectRole: IRole;
 
 export default function Preview({className, style, script, run, setRun}:IControl){
   const { roles, configs } = script;
 
   const [ selectSide, setSelectSide ] = useState(false);
-  showSelectSide = (callback)=>{
-    selectSideCallback = callback;
+  
+  const onSelectSide = (src:any) => {
+    selectRole.side = src;
+    setSelectSide(false);
+    onScriptUpdate();
+  };
+
+  const onClickSide = (role:IRole) => {
     setSelectSide(true);
-    console.log(123);
+    selectRole = role;
   };
 
   return (
@@ -61,7 +64,7 @@ export default function Preview({className, style, script, run, setRun}:IControl
         onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
       >
         <TabBox>
-          <RolePage roles={roles}  />
+          <RolePage roles={roles} onClickSide={onClickSide} />
         </TabBox>
         <TabBox>
           <ContentPage script={script} />
@@ -79,47 +82,8 @@ export default function Preview({className, style, script, run, setRun}:IControl
         </div>
       }
       {
-        selectSide && <SelectSide hideSeletSide={()=>setSelectSide(false)} />
+        selectSide && <SelectSide onCancel={()=>setSelectSide(false)} onSelect={onSelectSide} />
       }
-    </div>
-  );
-}
-
-function SelectSide({ hideSeletSide }: { hideSeletSide:()=>any }){
-  return (
-    <div
-      className="w-full h-full absolute z-50 top-0 flex items-center justify-center"
-      style={{backgroundColor: '#0004'}}
-      onClick={hideSeletSide}
-    >
-      <div
-        className="bg-white text-base pt-2 pb-4"
-        style={{width: '90%'}}
-        onClick={(e)=>e.stopPropagation()}
-      >
-        <div className="text-lg text-center">默认图片</div>
-        <div className="flex items-center justify-center flex-wrap">
-          {
-            defaultSides.map((side, index)=>
-              <div
-                key={index}
-                className="mx-1 my-0.5 lp-choose-side"
-                onClick={()=>{
-                  selectSideCallback(side);
-                  hideSeletSide();
-                }}
-              >
-                <Avatar size={40} src={side} />
-              </div>
-            )
-          }
-        </div>
-        <div className="text-lg text-center">上传图片</div>
-        <div className="flex justify-center">
-          <Button onClick={hideSeletSide}>取消</Button>
-          <Button type="primary">确定</Button>
-        </div>
-      </div>
     </div>
   );
 }

@@ -3,13 +3,13 @@ import { IRole } from '@/pages/Chat/types';
 import { Button } from 'antd-mobile';
 import { IRoleSet } from '@/pages/Chat/types';
 import { onScriptUpdate } from '../index';
-import { showSelectSide } from './index';
 
 interface IRolePage{
   roles: IRoleSet;
+  onClickSide: (role:IRole)=>any;
 }
 
-export default function RolePage({ roles }:IRolePage) {
+export default function RolePage({ roles, onClickSide }:IRolePage) {
   return (
     <>
       {
@@ -17,7 +17,7 @@ export default function RolePage({ roles }:IRolePage) {
           <CRole
             key={id}
             role={role}
-            onRoleChange={onScriptUpdate}
+            onClickSide={onClickSide}
           />
         )
       }
@@ -42,21 +42,16 @@ export default function RolePage({ roles }:IRolePage) {
 
 interface ICRole{
   role: IRole;
-  onRoleChange: ()=>any;
+  onClickSide: (role:IRole)=>any;
 }
 
-export function CRole({role, onRoleChange}:ICRole){
+export function CRole({ role, onClickSide }:ICRole){
   const { side, name, isMain } = role;
   return (
     <div className="flex my-4 text-lg">
       <div
-        className="mr-4"
-        onClick={()=>{
-          showSelectSide((src)=>{
-            role.side = src;
-            onScriptUpdate();
-          })
-        }}
+        className="mr-4 lp-choose-side"
+        onClick={()=>onClickSide(role)}
       >
         <Avatar size={60} src={side} gap={5} >{side}</Avatar>
       </div>
@@ -68,7 +63,7 @@ export function CRole({role, onRoleChange}:ICRole){
             const newName = e.target.value
             if(newName !== name) {
               role.name = newName;
-              onRoleChange();
+              onScriptUpdate();
             }
           }}
         />
@@ -79,7 +74,7 @@ export function CRole({role, onRoleChange}:ICRole){
               defaultChecked={isMain}
               onChange={()=>{
                 role.isMain = !isMain;
-                onRoleChange();
+                onScriptUpdate();
               }}
             />
           </div>

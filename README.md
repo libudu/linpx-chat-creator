@@ -2,7 +2,7 @@
 
 这是linpx-chat-creator，是Linpx的子项目，一个交互式聊天框模拟器的即时编辑器。
 
-LINPX是什么详见 https://github.com/libudu/linpx-web。
+LINPX是什么详见 https://github.com/libudu/linpx-web 。
 
 如何运行、赞助信息等也详见LINPX的项目介绍。
 

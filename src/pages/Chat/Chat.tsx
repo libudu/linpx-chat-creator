@@ -9,12 +9,12 @@ import {
   TransitionGroup,
 } from 'react-transition-group';
 import './Chat.less';
+import { useModel } from '@/.umi/plugin-model/useModel';
 
 interface IPreview{
   className?: any
   style?: any;
   script: IScript;
-  run: boolean;
 }
 
 function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
@@ -53,7 +53,8 @@ function RenderContentList({contents, roles, scrollRef, bottomRef}:
   );
 }
 
-export default function Preview({script, className, style, run}:IPreview){
+export default function Preview({script, className, style }:IPreview) {
+  const { run } = useModel('app');
   const { roles, contents, configs } = script;
   const { title, subTitle } = configs;
   const boxClassName = "h-full w-full bg-gray-100 pt-10 pb-12 flex flex-col overflow-y-scroll";
@@ -78,11 +79,9 @@ function RunPreview({script}:{script:IScript}){
   const { contents, roles, configs } = script;
   const [nowContents, setNowContents] = useState<IContent[]>([]);
   const [index, setIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(()=>{
-    //console.log('run step!');
     const content = contents[index];
     if(!content) return;
     const delay = content.delay || configs.defaultDelay;

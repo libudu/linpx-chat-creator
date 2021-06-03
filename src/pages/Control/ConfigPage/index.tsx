@@ -1,12 +1,14 @@
+import { useModel } from '@/.umi/plugin-model/useModel';
 import { IConfig } from '@/pages/types';
 import { Input, InputNumber, Button } from 'antd';
-import { setRun, onScriptUpdate } from '../../index';
+import { onScriptUpdate } from '../../index';
 
 interface IConfigPage{
   configs: IConfig;
 }
 
 export default function ConfigPage({ configs }: IConfigPage){
+  const { setRun } = useModel("app");
   const { defaultDelay } = configs;
   const InputEle = (key:string, name:string)=>{
     // @ts-ignore
@@ -45,7 +47,7 @@ export default function ConfigPage({ configs }: IConfigPage){
       </div>
       
       <div className="flex justify-center my-8">
-        <Button type="primary" onClick={()=>setRun(true)}>开始运行</Button>
+        <Button type="primary" onClick={() => setRun(true)}>开始运行</Button>
       </div>
     </div>
   );

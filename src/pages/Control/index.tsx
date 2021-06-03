@@ -12,14 +12,13 @@ import "./index.less";
 import React, { useState } from 'react';
 import { onScriptUpdate } from '..';
 import ControlModal from './components/ControlModal';
+import { useModel } from '@/.umi/plugin-model/useModel';
 
 
 interface IControl{
   className?: any;
   style?: any;
   script: IScript;
-  run: boolean;
-  setRun: any;
 }
 
 function TabBox({children}: { children:any }) {
@@ -41,7 +40,9 @@ const tabs = [
 
 let selectRole: IRole;
 
-const Control: React.FC<IControl> = ({ className, style, script, run, setRun }) => {
+const Control: React.FC<IControl> = ({ className, style, script }) => {
+  const { run, setRun } = useModel('app');
+  
   const { roles, configs } = script;
 
   const [ selectSide, setSelectSide ] = useState(false);

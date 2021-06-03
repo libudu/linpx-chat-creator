@@ -5,11 +5,11 @@ export interface IRole {
   isMain?: boolean;
 }
 
-
 export interface IContentBase {
-  id?: string | number; // 用于渲染时生成标记
+  id?: string; // 用于渲染时生成标记
   delay?: number;
 }
+
 // 对话
 export interface IDialog extends IContentBase {
   from: string;

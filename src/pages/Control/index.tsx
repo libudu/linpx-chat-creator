@@ -1,7 +1,7 @@
 import { Tabs } from 'antd-mobile';
 import { Button } from 'antd';
 import classnames from 'classnames';
-import { IScript, IRole } from '@/pages/Chat/types';
+import { IScript, IRole } from '@/pages/types';
 
 import ContentPage from './ContentPage';
 import RolePage from './RolePage';
@@ -9,8 +9,9 @@ import ConfigPage from './ConfigPage';
 import SelectSide from './components/SelectSide';
 
 import "./index.less";
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { onScriptUpdate } from '..';
+import ControlModal from './components/ControlModal';
 
 
 interface IControl{
@@ -21,7 +22,7 @@ interface IControl{
   setRun: any;
 }
 
-function TabBox({children}:{children:any}){
+function TabBox({children}: { children:any }) {
   return (
     <div
       className="flex flex-col justify-center items-center"
@@ -40,7 +41,7 @@ const tabs = [
 
 let selectRole: IRole;
 
-export default function Preview({className, style, script, run, setRun}:IControl){
+const Control: React.FC<IControl> = ({ className, style, script, run, setRun }) => {
   const { roles, configs } = script;
 
   const [ selectSide, setSelectSide ] = useState(false);
@@ -58,11 +59,7 @@ export default function Preview({className, style, script, run, setRun}:IControl
 
   return (
     <div className={classnames(className, "bg-white relative")} style={style}>
-      <Tabs tabs={tabs}
-        initialPage={2}
-        onChange={(tab, index) => { console.log('onChange', index, tab); }}
-        onTabClick={(tab, index) => { console.log('onTabClick', index, tab); }}
-      >
+      <Tabs tabs={tabs} initialPage={2}>
         <TabBox>
           <RolePage roles={roles} onClickSide={onClickSide} />
         </TabBox>
@@ -73,6 +70,7 @@ export default function Preview({className, style, script, run, setRun}:IControl
           <ConfigPage configs={configs} />
         </TabBox>
       </Tabs>
+      <ControlModal />
       {
         run &&
         <div className="absolute w-full h-full z-50 bg-black bg-opacity-50 top-0 flex items-center justify-center">
@@ -87,3 +85,5 @@ export default function Preview({className, style, script, run, setRun}:IControl
     </div>
   );
 }
+
+export default Control;

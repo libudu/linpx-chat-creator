@@ -1,8 +1,8 @@
 import Dialog from './Dialog';
 import classnames from 'classnames';
 import Header from './Header';
-import { IScript, IContent, IDialog, IRole, IRoleSet } from './types';
-import { getRandomNum } from '@/utils/util';
+import { IScript, IContent, IDialog, IRoleSet } from '../types';
+import { uid } from 'uid';
 import { useEffect, useRef, useState } from 'react';
 import {
   CSSTransition,
@@ -19,7 +19,7 @@ interface IPreview{
 
 function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
   // 还没id则生成id
-  if(!content.id) content.id = getRandomNum();
+  if(!content.id) content.id = uid();
   // @ts-ignore
   const { type } = content;
   // 没有type参数，是对话
@@ -37,7 +37,7 @@ function RenderContentList({contents, roles, scrollRef, bottomRef}:
     <TransitionGroup className="w-full">
         {
           contents.map(content=>{
-            if(!content.id) content.id = getRandomNum();
+            if(!content.id) content.id = uid();
             content = content as IDialog;
             const isRight = roles[content.from].isMain;
             return (<CSSTransition

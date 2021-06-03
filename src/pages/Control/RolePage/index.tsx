@@ -1,8 +1,8 @@
 import { Input, Avatar, Switch } from 'antd';
-import { IRole } from '@/pages/Chat/types';
+import { IRole } from '@/pages/types';
 import { Button } from 'antd-mobile';
-import { IRoleSet } from '@/pages/Chat/types';
-import { onScriptUpdate } from '../index';
+import { IRoleSet } from '@/pages/types';
+import { onScriptUpdate } from '../../index';
 
 interface IRolePage{
   roles: IRoleSet;

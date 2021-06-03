@@ -1,4 +1,4 @@
-import { IScript } from './Chat/types';
+import { IScript } from './types';
 import SideImg from '@/assets/test.jpg';
 
 const Script:IScript = {

@@ -1,7 +1,6 @@
-import { IConfig } from '@/pages/Chat/types';
+import { IConfig } from '@/pages/types';
 import { Input, InputNumber, Button } from 'antd';
-import { delay } from 'lodash';
-import { setRun, onScriptUpdate } from '../index';
+import { setRun, onScriptUpdate } from '../../index';
 
 interface IConfigPage{
   configs: IConfig;

@@ -28,6 +28,7 @@
     "classnames": "^2.2.6",
     "lodash": "^4.17.21",
     "react-transition-group": "^4.4.1",
+    "uid": "^2.0.0",
     "umi": "^3.4.2",
     "umi-plugin-tailwindcss": "^3.0.3"
   },

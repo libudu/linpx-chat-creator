@@ -1,9 +1,9 @@
-import { IDialog, IContent, IScript, IRoleSet, IConfig } from '@/pages/Chat/types';
+import { IDialog, IContent, IScript, IRoleSet, IConfig } from '@/pages/types';
 import { Avatar, Input, Select, InputNumber } from 'antd';
 import { Button } from 'antd-mobile';
 import { DeleteOutlined } from '@ant-design/icons';
-import { getRandomNum } from '@/utils/util';
-import { onScriptUpdate } from '../index';
+import { uid } from 'uid';
+import { onScriptUpdate } from '@/pages/index';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -42,7 +42,7 @@ export default function ContentPage({script}:{script:IScript}){
     <>
       {
         contents.map((content, index)=>{
-          if(!content.id) content.id = getRandomNum();
+          if(!content.id) content.id = uid();
           return (<div className="w-full" key={content.id}>
               {
                 renderContent({

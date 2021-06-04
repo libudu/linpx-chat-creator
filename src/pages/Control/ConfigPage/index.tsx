@@ -1,50 +1,48 @@
-import { useModel } from '@/.umi/plugin-model/useModel';
+import { useModel } from 'umi';
 import { IConfig } from '@/pages/types';
 import { Input, InputNumber, Button } from 'antd';
-import { onScriptUpdate } from '../../index';
+import { useConfig } from '@/hooks/script';
 
-interface IConfigPage{
-  configs: IConfig;
+interface InputEleProps {
+  configKey: keyof IConfig;
+  name: string;
 }
 
-export default function ConfigPage({ configs }: IConfigPage){
-  const { setRun } = useModel("app");
-  const { defaultDelay } = configs;
-  const InputEle = (key:string, name:string)=>{
-    // @ts-ignore
-    const value = configs[key];
-    return <Input
+const InputEle: React.FC<InputEleProps> = ({ configKey, name })=>{
+  const { value, setValue} = useConfig(configKey);
+  return (
+    <Input
       className="mb-4"
-      key={key}
       defaultValue={value}
       addonBefore={name}
-      onChange={(e)=>{
-        // @ts-ignore
-        configs[key] = e.target.value;
-        onScriptUpdate();
-      }}
+      onChange={(e) => setValue(e.target.value)}
     />
-  };
+  );
+};
+
+const InputNumberEle: React.FC<InputEleProps> = ({ configKey, name })=>{
+  const { value, setValue} = useConfig(configKey);
+  return (
+    <div className="flex items-center">
+      <span className="ml-2" style={{minWidth: '150px'}}>{name}：{value}</span>
+      <InputNumber
+        size={'small'}
+        defaultValue={value}
+        min={0} max={100} step={0.1} precision={2}
+        onChange={(e) => setValue(e) }
+      />
+    </div>
+  );
+};
+
+export default function ConfigPage(){
+  const { setRun } = useModel('app');
+
   return (
     <div className="m-4">
-      {
-        [
-          ["title", "主标题"],
-          ["subTitle", "副标题"],
-        ].map(([key, value])=>InputEle(key, value))
-      }
-      <div className="flex items-center">
-        <span className="ml-2" style={{minWidth: '150px'}}>默认延迟时间：{defaultDelay}</span>
-        <InputNumber
-          size={'small'}
-          defaultValue={defaultDelay}
-          min={0} max={100} step={0.1} precision={2}
-          onChange={(e)=>{
-            configs.defaultDelay = e;
-            onScriptUpdate();
-          }}
-        />
-      </div>
+      <InputEle configKey="title" name="主标题" />
+      <InputEle configKey="subTitle" name="副标题" />
+      <InputNumberEle configKey="defaultDelay" name="默认延迟时间" />
       
       <div className="flex justify-center my-8">
         <Button type="primary" onClick={() => setRun(true)}>开始运行</Button>

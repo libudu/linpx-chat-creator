@@ -1,24 +1,23 @@
-import { Tabs } from 'antd-mobile';
+import React, { useState } from 'react';
+import { useModel } from 'umi';
 import { Button } from 'antd';
+import { Tabs } from 'antd-mobile';
 import classnames from 'classnames';
-import { IScript, IRole } from '@/pages/types';
+
+import { IRole } from '@/pages/types';
 
 import ContentPage from './ContentPage';
 import RolePage from './RolePage';
 import ConfigPage from './ConfigPage';
 import SelectSide from './components/SelectSide';
+import ControlModal from './components/ControlModal';
 
 import "./index.less";
-import React, { useState } from 'react';
-import { onScriptUpdate } from '..';
-import ControlModal from './components/ControlModal';
-import { useModel } from '@/.umi/plugin-model/useModel';
 
 
 interface IControl{
   className?: any;
   style?: any;
-  script: IScript;
 }
 
 function TabBox({children}: { children:any }) {
@@ -38,37 +37,35 @@ const tabs = [
   { title: '配置与调试', sub: '3' },
 ];
 
-let selectRole: IRole;
-
-const Control: React.FC<IControl> = ({ className, style, script }) => {
+const Control: React.FC<IControl> = ({ className, style }) => {
   const { run, setRun } = useModel('app');
-  
-  const { roles, configs } = script;
+  const { setRole } = useModel('roles');
 
-  const [ selectSide, setSelectSide ] = useState(false);
+  const [ selectRole, setSelectRole ] = useState<IRole | null>(null);
   
-  const onSelectSide = (src:any) => {
-    selectRole.side = src;
-    setSelectSide(false);
-    onScriptUpdate();
-  };
-
-  const onClickSide = (role:IRole) => {
-    setSelectSide(true);
-    selectRole = role;
+  const onSelectSide = (src: string) => {
+    if(selectRole) {
+      setRole({
+        ...selectRole,
+        side: src,
+      });
+      setSelectRole(null);
+    } else {
+      console.error('[Control-index] select side error, no select role.');
+    }
   };
 
   return (
     <div className={classnames(className, "bg-white relative")} style={style}>
       <Tabs tabs={tabs} initialPage={2}>
         <TabBox>
-          <RolePage roles={roles} onClickSide={onClickSide} />
+          <RolePage onClickSide={setSelectRole} />
         </TabBox>
         <TabBox>
-          <ContentPage script={script} />
+          <ContentPage />
         </TabBox>
         <TabBox>
-          <ConfigPage configs={configs} />
+          <ConfigPage />
         </TabBox>
       </Tabs>
       <ControlModal />
@@ -81,7 +78,8 @@ const Control: React.FC<IControl> = ({ className, style, script }) => {
         </div>
       }
       {
-        selectSide && <SelectSide onCancel={()=>setSelectSide(false)} onSelect={onSelectSide} />
+        selectRole && 
+        <SelectSide onCancel={()=>setSelectRole(null)} onSelect={onSelectSide} />
       }
     </div>
   );

@@ -1,5 +1,6 @@
 // 角色
 export interface IRole {
+  id: string;
   name: string;
   side: any;
   isMain?: boolean;

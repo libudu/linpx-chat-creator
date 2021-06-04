@@ -1,20 +1,20 @@
-import Dialog from './Dialog';
-import classnames from 'classnames';
-import Header from './Header';
-import { IScript, IContent, IDialog, IRoleSet } from '../types';
-import { uid } from 'uid';
 import { useEffect, useRef, useState } from 'react';
 import {
   CSSTransition,
   TransitionGroup,
 } from 'react-transition-group';
-import './Chat.less';
-import { useModel } from '@/.umi/plugin-model/useModel';
+import classnames from 'classnames';
+import { uid } from 'uid';
+import { IContent, IDialog, IRoleSet } from '../types';
+import { useModel } from 'umi';
+import Dialog from './Dialog';
+import Header from './Header';
+
+import './index.less';
 
 interface IPreview{
   className?: any
   style?: any;
-  script: IScript;
 }
 
 function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
@@ -30,8 +30,8 @@ function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
   return <Dialog key={id} name={name} side={side} text={text} isRight={isMain} />
 }
 
-function RenderContentList({contents, roles, scrollRef, bottomRef}:
-  {contents:IContent[], roles:IRoleSet, scrollRef?:any, bottomRef?:any})
+function RenderContentList({contents, roles, bottomRef}:
+  {contents:IContent[], roles:IRoleSet, bottomRef?:any})
 {
   return (
     <TransitionGroup className="w-full">
@@ -53,9 +53,11 @@ function RenderContentList({contents, roles, scrollRef, bottomRef}:
   );
 }
 
-export default function Preview({script, className, style }:IPreview) {
+export default function Preview({ className, style }:IPreview) {
   const { run } = useModel('app');
-  const { roles, contents, configs } = script;
+  const { contents } = useModel('contents');
+  const { roles } = useModel('roles');
+  const { configs } = useModel('configs');
   const { title, subTitle } = configs;
   const boxClassName = "h-full w-full bg-gray-100 pt-10 pb-12 flex flex-col overflow-y-scroll";
   return (
@@ -66,7 +68,7 @@ export default function Preview({script, className, style }:IPreview) {
       </div>
       {
         run && <div className={classnames(boxClassName, "absolute top-0")}>
-          <RunPreview script={script} />
+          <RunPreview />
         </div>
       }
       <div className="absolute w-full h-12 bg-white" style={{bottom: "0"}}>
@@ -75,8 +77,11 @@ export default function Preview({script, className, style }:IPreview) {
   );
 }
 
-function RunPreview({script}:{script:IScript}){
-  const { contents, roles, configs } = script;
+function RunPreview(){
+  const { contents } = useModel('contents');
+  const { roles } = useModel('roles');
+  const { configs } = useModel('configs');
+
   const [nowContents, setNowContents] = useState<IContent[]>([]);
   const [index, setIndex] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -92,6 +97,7 @@ function RunPreview({script}:{script:IScript}){
     }, delay * 1000);
     return ()=>clearTimeout(id);
   }, [index]);
+  
   return (
     <div className="w-full h-full overflow-y-scroll">
       <RenderContentList roles={roles} contents={nowContents} bottomRef={bottomRef} />

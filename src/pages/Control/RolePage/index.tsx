@@ -1,15 +1,14 @@
+import { useModel } from 'umi';
 import { Input, Avatar, Switch } from 'antd';
 import { IRole } from '@/pages/types';
 import { Button } from 'antd-mobile';
-import { IRoleSet } from '@/pages/types';
-import { onScriptUpdate } from '../../index';
 
 interface IRolePage{
-  roles: IRoleSet;
   onClickSide: (role:IRole)=>any;
 }
 
-export default function RolePage({ roles, onClickSide }:IRolePage) {
+export default function RolePage({ onClickSide }:IRolePage) {
+  const { roles, addRole } = useModel('roles');
   return (
     <>
       {
@@ -25,14 +24,7 @@ export default function RolePage({ roles, onClickSide }:IRolePage) {
         type="ghost"
         className="w-32"
         size="small"
-        onClick={()=>{
-          const roleList = Object.keys(roles);
-          roles[roleList[roleList.length-1] + 1] = {
-            name: `角色${roleList.length+1}`,
-            side: `角色${roleList.length+1}`,
-          };
-          onScriptUpdate();
-        }}
+        onClick={() => addRole()}
       >
         新建角色
       </Button>
@@ -46,7 +38,10 @@ interface ICRole{
 }
 
 export function CRole({ role, onClickSide }:ICRole){
+  const { setRole } = useModel('roles');
+  
   const { side, name, isMain } = role;
+
   return (
     <div className="flex my-4 text-lg">
       <div
@@ -62,8 +57,7 @@ export function CRole({ role, onClickSide }:ICRole){
           onChange={(e)=>{
             const newName = e.target.value
             if(newName !== name) {
-              role.name = newName;
-              onScriptUpdate();
+              setRole({ ...role, name: newName })
             }
           }}
         />
@@ -72,10 +66,7 @@ export function CRole({ role, onClickSide }:ICRole){
           <div>
             <Switch
               defaultChecked={isMain}
-              onChange={()=>{
-                role.isMain = !isMain;
-                onScriptUpdate();
-              }}
+              onChange={() => setRole({ ...role, isMain: !isMain })}
             />
           </div>
         </div>

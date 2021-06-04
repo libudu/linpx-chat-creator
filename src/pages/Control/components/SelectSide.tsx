@@ -8,7 +8,7 @@ for(let i=1; i <= 12; i++){
 }
 
 export interface ISelectSide {
-  onSelect: (src:any)=>any;
+  onSelect: (src: string)=>any;
   onCancel: any;
 }
 

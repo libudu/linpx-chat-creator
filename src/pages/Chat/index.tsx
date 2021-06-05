@@ -1,14 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  CSSTransition,
-  TransitionGroup,
-} from 'react-transition-group';
 import classnames from 'classnames';
-import { uid } from 'uid';
-import { IContent, IDialog, IRoleSet } from '../types';
+import { IContent } from '../types';
 import { useModel } from 'umi';
-import Dialog from './Dialog';
 import Header from './Header';
+import RenderContents from './RenderContents';
 
 import './index.less';
 
@@ -17,54 +12,19 @@ interface IPreview{
   style?: any;
 }
 
-function RenderContent({content, roles}:{content:IContent, roles:IRoleSet}){
-  // 还没id则生成id
-  if(!content.id) content.id = uid();
-  // @ts-ignore
-  const { type } = content;
-  // 没有type参数，是对话
-  //if(!type) {
-  const { text, from, id } = content as IDialog;
-  const { name, side, isMain } = roles[from];
-  //console.log(content.from, roles);
-  return <Dialog key={id} name={name} side={side} text={text} isRight={isMain} />
-}
-
-function RenderContentList({contents, roles, bottomRef}:
-  {contents:IContent[], roles:IRoleSet, bottomRef?:any})
-{
-  return (
-    <TransitionGroup className="w-full">
-        {
-          contents.map(content=>{
-            if(!content.id) content.id = uid();
-            content = content as IDialog;
-            const isRight = roles[content.from].isMain;
-            return (<CSSTransition
-              key={content.id}
-              timeout={500}
-              classNames={isRight ? 'item-right' : 'item'}
-              children={<RenderContent content={content} roles={roles} />}
-            />);
-          })
-        }
-        <div className="h-0" ref={bottomRef}></div>
-    </TransitionGroup>
-  );
-}
-
 export default function Preview({ className, style }:IPreview) {
   const { run } = useModel('app');
   const { contents } = useModel('contents');
-  const { roles } = useModel('roles');
+  const { roles, roleSet } = useModel('roles');
   const { configs } = useModel('configs');
+
   const { title, subTitle } = configs;
   const boxClassName = "h-full w-full bg-gray-100 pt-10 pb-12 flex flex-col overflow-y-scroll";
   return (
     <div className={classnames(className, 'h-full w-full relative')} style={style}>
       <Header title={title} subTitle={subTitle} />
       <div className={boxClassName}>
-        <RenderContentList roles={roles} contents={contents} />
+        <RenderContents roles={roleSet} contents={contents} />
       </div>
       {
         run && <div className={classnames(boxClassName, "absolute top-0")}>
@@ -79,7 +39,7 @@ export default function Preview({ className, style }:IPreview) {
 
 function RunPreview(){
   const { contents } = useModel('contents');
-  const { roles } = useModel('roles');
+  const { roleSet } = useModel('roles');
   const { configs } = useModel('configs');
 
   const [nowContents, setNowContents] = useState<IContent[]>([]);
@@ -100,7 +60,7 @@ function RunPreview(){
   
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <RenderContentList roles={roles} contents={nowContents} bottomRef={bottomRef} />
+      <RenderContents roles={roleSet} contents={nowContents} bottomRef={bottomRef} />
     </div>
   );
 }

@@ -13,31 +13,11 @@ interface CDialogProps {
   dialog: IDialog;
 }
 
-const SideOptions: React.FC = () => {
-  const { roles } = useModel('roles');
-
-  return (<>
-    {
-      Object.entries(roles).map(([key, role]) =>
-        <Option value={key} key={key}>
-          <div className="flex items-center text-base cdialog-rolebox">
-            <div className="flex items-center">
-              <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
-            </div>
-            <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{role.name}</div>
-          </div>
-        </Option>
-      )
-    }
-  </>);
-}
-
 export default function CDialog({ index, dialog }: CDialogProps) {
   const { value: defaultDelay } = useConfig('defaultDelay');
-
   const { roles } = useModel('roles');
+  const { setContent, deleteContent, insertDialog } = useModel('contents');
 
-  const { setContent, deleteContent, insertContent } = useModel('contents');
   console.log('render dialog');
 
   const { text, from } = dialog;
@@ -52,7 +32,7 @@ export default function CDialog({ index, dialog }: CDialogProps) {
         <div className="bg-gray-300 w-full absolute" style={{height: '1px'}} />
         <div
           className="absolute w-5 h-5 flex items-center justify-between lp-content-add-icon z-20"
-          onClick={() => insertContent(index, {
+          onClick={() => insertDialog(index, {
             from: Object.keys(roles)[0],
             text: "默认对话",
           })}
@@ -67,13 +47,22 @@ export default function CDialog({ index, dialog }: CDialogProps) {
             dropdownStyle={{width:'max-content'}}
             dropdownMatchSelectWidth={false}
             onSelect={(value)=>{
-              setContent({
-                ...dialog,
-                from: value,
-              });
+              setContent(dialog, { from: value });
             }}
-            children={<SideOptions />}
-          />
+          >
+            {
+              Object.entries(roles).map(([key, role]) =>
+                <Option value={key} key={key}>
+                  <div className="flex items-center text-base cdialog-rolebox">
+                    <div className="flex items-center">
+                      <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
+                    </div>
+                    <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{role.name}</div>
+                  </div>
+                </Option>
+              )
+            }
+          </Select>
         </div>
         <div className="flex items-center" >
           <span className="ml-2 w-8">延迟</span>
@@ -82,12 +71,7 @@ export default function CDialog({ index, dialog }: CDialogProps) {
             size={'small'}
             defaultValue={defaultDelay}
             min={0} max={100} step={0.1} precision={2}
-            onChange={(e)=>{
-              setContent({
-                ...dialog,
-                delay: e,
-              });
-            }}
+            onChange={e => setContent(dialog, { delay: e }) }
           />
         </div>
         <div
@@ -102,12 +86,7 @@ export default function CDialog({ index, dialog }: CDialogProps) {
           style={{wordBreak: 'break-all'}}
           defaultValue={text}
           autoSize={{ minRows: 1, maxRows: 3 }}
-          onChange={(e)=>{
-            setContent({
-              ...dialog,
-              text: e.target.value,
-            });
-          }}
+          onChange={e => setContent(dialog, { text: e.target.value })}
         />
       </div>
     </div>

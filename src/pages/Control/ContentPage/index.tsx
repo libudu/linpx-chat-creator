@@ -8,13 +8,13 @@ import Dialog from './components/Dialog';
 
 
 export default function ContentPage(){
-  const { contents, insertContent } = useModel('contents');
-  const { roles } = useModel('roles');
+  const { contents, insertDialog } = useModel('contents');
+  const { roles, roleSet } = useModel('roles');
 
   // 共用一个添加内容函数
   const onContentAdd = (index:number)=>{
-    insertContent(index, {
-      from: Object.keys(roles)[0],
+    insertDialog(index, {
+      from: roles[0].id,
       text: "默认对话",
     });
   };
@@ -29,7 +29,6 @@ export default function ContentPage(){
                 renderContent({
                   index,
                   content,
-                  roles,
                 })
               }
           </div>);
@@ -50,7 +49,6 @@ export default function ContentPage(){
 interface IRenderContent{
   index: number;
   content:IContent;
-  roles:IRoleSet;
 }
 
 export function renderContent({ index, content }:IRenderContent){

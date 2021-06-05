@@ -1,3 +1,7 @@
+// 工具类型
+export type IMap<T> = { [id: string]: T };
+
+
 // 角色
 export interface IRole {
   id: string;
@@ -7,7 +11,7 @@ export interface IRole {
 }
 
 export interface IContentBase {
-  id?: string; // 用于渲染时生成标记
+  id: string; // 用于渲染时生成标记
   delay?: number;
 }
 
@@ -29,7 +33,6 @@ export interface IPic extends IContentBase {
   display: string;
 }
 
-
 export type IContent = IDialog | INotice | IPic;
 
 export type IRoleSet = { [id: string]: IRole};
@@ -37,7 +40,7 @@ export type IRoleSet = { [id: string]: IRole};
 // 脚本
 export interface IScript {
   // 角色信息
-  roles: IRoleSet;
+  roles: IRole[];
   // 对话信息
   contents: IContent[];
   // 配置信息

@@ -5,7 +5,8 @@ interface InsertContentProps {
   newContent: (index: number) => void;
 }
 
-// 性能优化保持函数纯粹和key与index相关后，插入新Content只会渲染一次InsertContent
+// 性能优化
+// 通过key复用，插入新Content只会渲染一次InsertContent，删除不重渲染
 const InsertContent: React.FC<InsertContentProps> = ({ index, newContent }) => {
   return (<>
     <div className="h-6 mt-1 flex flex-col justify-center items-center relative lp-content-add">

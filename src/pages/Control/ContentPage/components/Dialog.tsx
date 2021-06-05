@@ -18,7 +18,6 @@ interface CDialogProps {
 // 修改延迟、切换人物都只会触发自身重渲染
 const CDialog: React.FC<CDialogProps> = ({ dialog }) => {
 
-  console.log('render content', dialog.id);
 
   // contents变动不触发更新，只依赖于传入的dialog
   const { setContent, deleteContent } = useModel(

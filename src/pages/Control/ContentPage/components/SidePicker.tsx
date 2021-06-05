@@ -9,10 +9,10 @@ interface SidePickerProps {
   dialog: IDialog;
 }
 
+// 会跟着Dialog一起重渲染，新增角色、切换头像时也会全部重渲染
 const SidePicker: React.FC<SidePickerProps> = ({ dialog }) => {
   const { roles } = useModel('roles');
   const { setContent } = useModel('contents', ({ setContent }) => ({ setContent }));
-  console.log('render side picker')
 
   return (
     <Select

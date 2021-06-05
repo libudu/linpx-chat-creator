@@ -35,7 +35,7 @@ const InputNumberEle: React.FC<InputEleProps> = ({ configKey, name })=>{
   );
 };
 
-export default function ConfigPage(){
+export default function ConfigPage() {
   const { setRun } = useModel('app');
 
   return (

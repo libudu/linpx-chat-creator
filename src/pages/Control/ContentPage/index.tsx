@@ -1,4 +1,5 @@
 import { useModel } from 'umi';
+import { memo } from 'react';
 import { Button } from 'antd-mobile';
 
 import { IDialog, IContent } from '@/pages/types';
@@ -6,7 +7,7 @@ import { IDialog, IContent } from '@/pages/types';
 import Dialog from './components/Dialog';
 import InsertContent from './components/InsertContent';
 
-export default function ContentPage(){
+const ContentPage: React.FC = () => {
   const {
     contents,
     insertDialog,
@@ -17,10 +18,7 @@ export default function ContentPage(){
       {
         contents.map((content, index) => (<>
           <InsertContent key={`i-${index}`} index={index} newContent={insertDialog} />
-          <Content
-            key={`c-${content.id}`}
-            content={content}
-          />
+          <RenderContent key={`c-${content.id}`} content={content} />
         </>))
       }
       <Button
@@ -35,17 +33,18 @@ export default function ContentPage(){
   );
 }
 
+export default memo(ContentPage);
+
 interface IRenderContent {
   content: IContent;
 }
 
-export function Content({ content }: IRenderContent) {
+export const RenderContent: React.FC<IRenderContent> = memo(({ content }) => {
   // @ts-ignore
   const { type } = content;
   // 没有type参数，是对话
   if(!type) {
-    const dialog = content as IDialog;
-    return <Dialog dialog={dialog} />;
+    return <Dialog dialog={content as IDialog} />;
   }
   return null;
-}
+})

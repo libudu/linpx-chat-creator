@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useModel } from 'umi';
 import { Tabs } from 'antd-mobile';
 import classnames from 'classnames';
@@ -37,7 +37,7 @@ const tabs = [
 ];
 
 const Control: React.FC<IControl> = ({ className, style }) => {
-  const { setRole } = useModel('roles');
+  const { setRole } = useModel('roles', ({ setRole }) => ({ setRole }));
 
   const [ selectRole, setSelectRole ] = useState<IRole>();
   

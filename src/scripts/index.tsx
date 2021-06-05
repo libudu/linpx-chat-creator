@@ -91,7 +91,7 @@ const initContents: Omit<IDialog, 'id'>[] = [
 
 const Script:IScript = {
   roles: initRoles.map((role, index) => ({...role, id: String(index)})),
-  contents: initContents.map(content => ({...content, id: uid()})),
+  contents: initContents.map(content => ({...content, id: uid(6)})),
   configs: {
     title: "橘猫的阅读器",
     subTitle: "114514人在线",

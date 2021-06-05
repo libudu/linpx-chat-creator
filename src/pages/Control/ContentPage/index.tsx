@@ -1,44 +1,26 @@
 import { useModel } from 'umi';
 import { Button } from 'antd-mobile';
-import { uid } from 'uid';
 
 import { IDialog, IContent } from '@/pages/types';
 
 import Dialog from './components/Dialog';
 
-
 export default function ContentPage(){
   const { contents, insertDialog } = useModel('contents');
-  const { roles } = useModel('roles');
-
-  // 共用一个添加内容函数
-  const onContentAdd = (index:number)=>{
-    insertDialog(index, {
-      from: roles[0].id,
-      text: "默认对话",
-    });
-  };
 
   return (
     <>
       {
         contents.map((content, index)=>{
-          if(!content.id) content.id = uid();
-          return (<div className="w-full" key={content.id}>
-              {
-                renderContent({
-                  index,
-                  content,
-                })
-              }
-          </div>);
+          const id = content.id;
+          return <Content key={id} index={index} content={content} />;
         })
       }
       <Button
         type="ghost"
         className="w-32 my-4"
         size="small"
-        onClick={()=>onContentAdd(contents.length)}
+        onClick={() => insertDialog(contents.length)}
       >
         新建对话
       </Button>
@@ -51,7 +33,7 @@ interface IRenderContent{
   content:IContent;
 }
 
-export function renderContent({ index, content }:IRenderContent){
+export function Content({ index, content }:IRenderContent){
   // @ts-ignore
   const { type } = content;
   // 没有type参数，是对话

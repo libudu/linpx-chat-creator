@@ -4,7 +4,7 @@ import { throttle } from "lodash"
 
 type PieceOf<T> = { [P in keyof T]?: T[P] };
 
-const dataStore: { [name: string]: any } = {}
+export const dataStore: { [name: string]: any } = {};
 
 // 遵循数据不断原则，每次更新都是一个新的对象
 // 但是每次返回的函数都是一样的，数据从dataStore中取
@@ -33,7 +33,7 @@ export const useArrayItem = <T extends { id: string }>(initState: T[], name: str
         setItems([...items.slice(0, index), newItem, ...items.slice(index+1)]);
         itemSet[newItem.id] = newItem;
       }
-    }, 1000)
+    }, 200)
   , []);
 
   const deleteItem = useCallback((item: T) => {

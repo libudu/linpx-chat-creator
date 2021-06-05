@@ -1,4 +1,5 @@
 import { IRole } from '@/pages/types';
+import { uid } from 'uid';
 import initScript from '../scripts';
 import { useArrayItem } from "./utils/useArrayItem";
 
@@ -12,9 +13,9 @@ export default function() {
   } = useArrayItem(initScript.roles, 'roles');
 
   const addRole = () => {
-    const id = roles.length + 1;
+    const id = roles.length;
     const newRole: IRole = {
-      id: String(id), 
+      id: uid(6), 
       name: `角色${id + 1}`,
       side: `角色${id + 1}`,
     };

@@ -4,17 +4,17 @@ import { IRole } from '@/pages/types';
 import { Button } from 'antd-mobile';
 
 interface IRolePage{
-  onClickSide: (role:IRole)=>any;
+  onClickSide: (role:IRole) => any;
 }
 
-export default function RolePage({ onClickSide }:IRolePage) {
+export default function RolePage({ onClickSide }: IRolePage) {
   const { roles, addRole } = useModel('roles');
   return (
     <>
       {
-        Object.entries(roles).map(([id, role]) =>
+        roles.map(role =>
           <CRole
-            key={id}
+            key={role.id}
             role={role}
             onClickSide={onClickSide}
           />
@@ -22,7 +22,6 @@ export default function RolePage({ onClickSide }:IRolePage) {
       }
       <Button
         type="ghost"
-        className="w-32"
         size="small"
         onClick={() => addRole()}
       >
@@ -37,7 +36,7 @@ interface ICRole{
   onClickSide: (role:IRole)=>any;
 }
 
-export function CRole({ role, onClickSide }:ICRole){
+export function CRole({ role, onClickSide }: ICRole){
   const { setRole } = useModel('roles');
   
   const { side, name, isMain } = role;
@@ -50,9 +49,9 @@ export function CRole({ role, onClickSide }:ICRole){
       >
         <Avatar size={60} src={side} gap={5} >{side}</Avatar>
       </div>
-      <div className="h-8">
+      <div className="h-8 w-48 mt-1">
         <Input
-          maxLength={40}
+          maxLength={30}
           defaultValue={name}
           onChange={(e)=>{
             const newName = e.target.value
@@ -61,14 +60,12 @@ export function CRole({ role, onClickSide }:ICRole){
             }
           }}
         />
-        <div className="flex items-center h-10">
-          <div className="mr-4">靠右</div>
-          <div>
-            <Switch
-              defaultChecked={isMain}
-              onChange={() => setRole(role, { isMain: !isMain })}
-            />
-          </div>
+        <div className="flex items-center h-9">
+          <div className="mr-4 mb-1">靠右</div>
+          <Switch
+            defaultChecked={isMain}
+            onChange={() => setRole(role, { isMain: !isMain })}
+          />
         </div>
       </div>
     </div>

@@ -30,10 +30,7 @@ export default function CDialog({ index, dialog }: CDialogProps) {
         <div className="bg-gray-300 w-full absolute" style={{height: '1px'}} />
         <div
           className="absolute w-5 h-5 flex items-center justify-between lp-content-add-icon z-20"
-          onClick={() => insertDialog(index, {
-            from: Object.keys(roles)[0],
-            text: "默认对话",
-          })}
+          onClick={() => insertDialog(index)}
         />
         <span className="mb-1 text-xl z-10">+</span>
       </div>
@@ -44,16 +41,18 @@ export default function CDialog({ index, dialog }: CDialogProps) {
             bordered={false}
             dropdownStyle={{width:'max-content'}}
             dropdownMatchSelectWidth={false}
-            onSelect={(value) => setContent(dialog, { from: value })}
+            onSelect={(value) => {
+              setContent(dialog, { from: value })
+            }}
           >
             {
-              Object.entries(roles).map(([key, role]) =>
-                <Option value={key} key={key}>
+              roles.map(({ id, side, name }) =>
+                <Option value={id} key={id}>
                   <div className="flex items-center text-base cdialog-rolebox">
                     <div className="flex items-center">
-                      <Avatar className="flex-shrink-0" size={26} src={role.side}>{role.side}</Avatar>
+                      <Avatar className="flex-shrink-0" size={26} src={side}>{side}</Avatar>
                     </div>
-                    <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{role.name}</div>
+                    <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{name}</div>
                   </div>
                 </Option>
               )

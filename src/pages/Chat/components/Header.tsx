@@ -5,7 +5,7 @@ interface IHeader{
   subTitle: string;
 }
 
-export default function Header({title, subTitle}:IHeader){
+export default function Header({ title, subTitle }: IHeader){
   return (
     <div className="w-full absolute flex items-center h-10 text-center text-base bg-gray-100 z-10">
       <div style={{width: '20%'}}><LeftOutlined /></div>

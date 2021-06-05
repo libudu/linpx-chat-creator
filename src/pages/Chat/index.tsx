@@ -2,24 +2,26 @@ import { useEffect, useRef, useState } from 'react';
 import classnames from 'classnames';
 import { IContent } from '../types';
 import { useModel } from 'umi';
-import Header from './Header';
+import Header from './components/Header';
 import RenderContents from './RenderContents';
 
 import './index.less';
 
-interface IPreview{
+interface IPreview {
   className?: any
   style?: any;
 }
 
-export default function Preview({ className, style }:IPreview) {
+export default function Preview({ className, style }: IPreview) {
   const { run } = useModel('app');
   const { contents } = useModel('contents');
   const { roles, roleSet } = useModel('roles');
   const { configs } = useModel('configs');
 
   const { title, subTitle } = configs;
+  
   const boxClassName = "h-full w-full bg-gray-100 pt-10 pb-12 flex flex-col overflow-y-scroll";
+
   return (
     <div className={classnames(className, 'h-full w-full relative')} style={style}>
       <Header title={title} subTitle={subTitle} />
@@ -37,7 +39,7 @@ export default function Preview({ className, style }:IPreview) {
   );
 }
 
-function RunPreview(){
+function RunPreview() {
   const { contents } = useModel('contents');
   const { roleSet } = useModel('roles');
   const { configs } = useModel('configs');

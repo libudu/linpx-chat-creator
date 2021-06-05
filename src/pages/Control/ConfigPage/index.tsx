@@ -1,7 +1,7 @@
 import { useModel } from 'umi';
 import { IConfig } from '@/pages/types';
 import { Input, InputNumber, Button } from 'antd';
-import { useConfig } from '@/hooks/script';
+import { useConfig } from '@/hooks';
 
 interface InputEleProps {
   configKey: keyof IConfig;

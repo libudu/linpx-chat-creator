@@ -45,10 +45,7 @@ const Control: React.FC<IControl> = ({ className, style }) => {
   
   const onSelectSide = (src: string) => {
     if(selectRole) {
-      setRole({
-        ...selectRole,
-        side: src,
-      });
+      setRole(selectRole, { side: src });
       setSelectRole(null);
     } else {
       console.error('[Control-index] select side error, no select role.');

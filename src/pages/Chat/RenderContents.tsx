@@ -4,7 +4,7 @@ import {
 } from 'react-transition-group';
 import { uid } from 'uid';
 import { IContent, IDialog, IRoleSet } from '../types';
-import Dialog from './Dialog';
+import Dialog from './components/Dialog';
 
 function RenderContent({ content, roles }: { content:IContent, roles:IRoleSet}){
   // 还没id则生成id

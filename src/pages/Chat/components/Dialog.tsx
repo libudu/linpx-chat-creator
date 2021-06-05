@@ -9,7 +9,7 @@ interface IDialog{
   showName?: boolean;
 }
 
-export default function Dialog({name, side, text, isRight=false, showName=true}:IDialog){
+export default function Dialog({ name, side, text, isRight=false, showName=true }: IDialog){
   return (
     <div className={"dialog " + (isRight ? "dialog-right" : "dialog-left")}>
       <div className="dialog-side">

@@ -12,7 +12,7 @@ export default function RolePage({ onClickSide }:IRolePage) {
   return (
     <>
       {
-        Object.entries(roles).map(([id, role])=>
+        Object.entries(roles).map(([id, role]) =>
           <CRole
             key={id}
             role={role}
@@ -57,7 +57,7 @@ export function CRole({ role, onClickSide }:ICRole){
           onChange={(e)=>{
             const newName = e.target.value
             if(newName !== name) {
-              setRole({ ...role, name: newName })
+              setRole(role, { name: newName })
             }
           }}
         />
@@ -66,7 +66,7 @@ export function CRole({ role, onClickSide }:ICRole){
           <div>
             <Switch
               defaultChecked={isMain}
-              onChange={() => setRole({ ...role, isMain: !isMain })}
+              onChange={() => setRole(role, { isMain: !isMain })}
             />
           </div>
         </div>

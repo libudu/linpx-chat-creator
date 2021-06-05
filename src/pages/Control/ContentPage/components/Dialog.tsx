@@ -3,7 +3,7 @@ import { Select, Avatar, InputNumber, Input } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { IDialog } from '@/pages/types';
-import { useConfig } from '@/hooks/script';
+import { useConfig } from '@/hooks';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -17,8 +17,6 @@ export default function CDialog({ index, dialog }: CDialogProps) {
   const { value: defaultDelay } = useConfig('defaultDelay');
   const { roles } = useModel('roles');
   const { setContent, deleteContent, insertDialog } = useModel('contents');
-
-  console.log('render dialog');
 
   const { text, from } = dialog;
 
@@ -46,9 +44,7 @@ export default function CDialog({ index, dialog }: CDialogProps) {
             bordered={false}
             dropdownStyle={{width:'max-content'}}
             dropdownMatchSelectWidth={false}
-            onSelect={(value)=>{
-              setContent(dialog, { from: value });
-            }}
+            onSelect={(value) => setContent(dialog, { from: value })}
           >
             {
               Object.entries(roles).map(([key, role]) =>

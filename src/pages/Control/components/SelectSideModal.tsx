@@ -2,17 +2,20 @@ import { Button, Avatar, Upload, message } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
+import { IRole } from '@/pages/types';
+
 let defaultSides:any[] = [];
 for(let i=1; i <= 12; i++){
   defaultSides.push(require(`@/assets/defaultSides/${i}.jpg`));
 }
 
 export interface ISelectSide {
+  selectRole?: IRole;
   onSelect: (src: string)=>any;
   onCancel: any;
 }
 
-function beforeUpload(file:any) {
+function beforeUpload(file: any) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
     message.error('只能上传 jpg 和 png !');
@@ -24,9 +27,10 @@ function beforeUpload(file:any) {
   return isJpgOrPng && isLt2M;
 }
 
-export default function SelectSide({ onSelect, onCancel }: ISelectSide){
-
+const SelectSideModal: React.FC<ISelectSide> = ({ selectRole, onSelect, onCancel }) => {
   const [ uploadImg, setUploadImg ] = useState<any>();
+  
+  if(!selectRole) return null;
 
   return (
     <div
@@ -99,3 +103,5 @@ export default function SelectSide({ onSelect, onCancel }: ISelectSide){
     </div>
   );
 }
+
+export default SelectSideModal;

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useModel } from 'umi';
-import { Button } from 'antd';
 import { Tabs } from 'antd-mobile';
 import classnames from 'classnames';
 
@@ -9,8 +8,8 @@ import { IRole } from '@/pages/types';
 import ContentPage from './ContentPage';
 import RolePage from './RolePage';
 import ConfigPage from './ConfigPage';
-import SelectSide from './components/SelectSide';
-import ControlModal from './components/ControlModal';
+import SelectSide from './components/SelectSideModal';
+import RunningModal from './components/RunningModal';
 
 import "./index.less";
 
@@ -38,15 +37,14 @@ const tabs = [
 ];
 
 const Control: React.FC<IControl> = ({ className, style }) => {
-  const { run, setRun } = useModel('app');
   const { setRole } = useModel('roles');
 
-  const [ selectRole, setSelectRole ] = useState<IRole | null>(null);
+  const [ selectRole, setSelectRole ] = useState<IRole>();
   
   const onSelectSide = (src: string) => {
     if(selectRole) {
       setRole(selectRole, { side: src });
-      setSelectRole(null);
+      setSelectRole(undefined);
     } else {
       console.error('[Control-index] select side error, no select role.');
     }
@@ -54,7 +52,7 @@ const Control: React.FC<IControl> = ({ className, style }) => {
 
   return (
     <div className={classnames(className, "bg-white relative")} style={style}>
-      <Tabs tabs={tabs} initialPage={2}>
+      <Tabs tabs={tabs} initialPage={1}>
         <TabBox>
           <RolePage onClickSide={setSelectRole} />
         </TabBox>
@@ -65,19 +63,8 @@ const Control: React.FC<IControl> = ({ className, style }) => {
           <ConfigPage />
         </TabBox>
       </Tabs>
-      <ControlModal />
-      {
-        run &&
-        <div className="absolute w-full h-full z-50 bg-black bg-opacity-50 top-0 flex items-center justify-center">
-          <Button className="w-32" type="primary" danger size="large" onClick={()=>setRun(false)}>
-            结束运行
-          </Button>
-        </div>
-      }
-      {
-        selectRole && 
-        <SelectSide onCancel={()=>setSelectRole(null)} onSelect={onSelectSide} />
-      }
+      <RunningModal />
+      <SelectSide selectRole={selectRole} onCancel={() => setSelectRole(undefined)} onSelect={onSelectSide} />
     </div>
   );
 }

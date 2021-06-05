@@ -9,12 +9,10 @@ export default function IndexPage() {
           className="h-full"
           style={{width: '350px', border: '1px solid black', borderRadius: '5px'}}
         />
-        <div
+        <Chat
           className="h-full"
           style={{width: '350px', border: '1px solid black', borderRadius: '5px'}}
-        >
-          <Chat />
-        </div>
+        />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 // 工具类型
 export type IMap<T> = { [id: string]: T };
-
+export type PieceOf<T> = { [P in keyof T]?: T[P] };
+export type ISetPiece<T> = (item: T, newPiece: PieceOf<T>) => void;
 
 // 角色
 export interface IRole {

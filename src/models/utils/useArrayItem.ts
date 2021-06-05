@@ -1,8 +1,6 @@
-import { IMap } from "@/pages/types";
+import { IMap, PieceOf } from "@/pages/types";
 import { useState, useMemo, useCallback } from "react";
 import { throttle } from "lodash"
-
-type PieceOf<T> = { [P in keyof T]?: T[P] };
 
 export const dataStore: { [name: string]: any } = {};
 
@@ -30,7 +28,7 @@ export const useArrayItem = <T extends { id: string }>(initState: T[], name: str
         console.error(`[model-${name}-setItemError] the item does not exist.`, item, items);
       } else {
         const newItem = { ...item, ...newContent };
-        setItems([...items.slice(0, index), newItem, ...items.slice(index+1)]);
+        setItems([...items.slice(0, index), newItem, ...items.slice(index + 1)]);
         itemSet[newItem.id] = newItem;
       }
     }, 200)
@@ -52,7 +50,7 @@ export const useArrayItem = <T extends { id: string }>(initState: T[], name: str
   const insertItem = useCallback((index: number, item: T) => {
     const items = dataStore[name];
     
-    setItems([...items.slice(0, index), item, ...items.slice(index + 1)]);
+    setItems([...items.slice(0, index), item, ...items.slice(index)]);
     itemSet[item.id] = item;
   }, []);
 

@@ -1,70 +1,45 @@
+import { memo } from 'react';
 import { useModel } from 'umi';
 import { Select, Avatar, InputNumber, Input } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 
 import { IDialog } from '@/pages/types';
-import { useConfig } from '@/hooks';
+import SidePicker from './SidePicker';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 interface CDialogProps {
-  index: number;
   dialog: IDialog;
 }
 
-export default function CDialog({ index, dialog }: CDialogProps) {
-  const { value: defaultDelay } = useConfig('defaultDelay');
-  const { roles } = useModel('roles');
-  const { setContent, deleteContent, insertDialog } = useModel('contents');
+// 性能优化：
+// 角色换头像不会触发整体重渲染，只会触发SidePicker重渲染
+// 修改延迟、切换人物都只会触发自身重渲染
+const CDialog: React.FC<CDialogProps> = ({ dialog }) => {
 
-  const { text, from } = dialog;
+  console.log('render content', dialog.id);
 
-  if(!dialog.delay) {
-    dialog.delay = defaultDelay as number;
-  }
+  // contents变动不触发更新，只依赖于传入的dialog
+  const { setContent, deleteContent } = useModel(
+    'contents', 
+    ({setContent, deleteContent}) => ({ setContent, deleteContent }),
+  );
+
+  const { text } = dialog;
 
   return (
-    <div className="px-4 w-full h-full">
-      <div className="h-6 mt-1 flex flex-col justify-center items-center relative lp-content-add">
-        <div className="bg-gray-300 w-full absolute" style={{height: '1px'}} />
-        <div
-          className="absolute w-5 h-5 flex items-center justify-between lp-content-add-icon z-20"
-          onClick={() => insertDialog(index)}
-        />
-        <span className="mb-1 text-xl z-10">+</span>
-      </div>
+    <>
       <div className="flex items-center justify-between">
         <div style={{width: '51%'}}>
-          <Select
-            defaultValue={from}
-            bordered={false}
-            dropdownStyle={{width:'max-content'}}
-            dropdownMatchSelectWidth={false}
-            onSelect={(value) => {
-              setContent(dialog, { from: value })
-            }}
-          >
-            {
-              roles.map(({ id, side, name }) =>
-                <Option value={id} key={id}>
-                  <div className="flex items-center text-base cdialog-rolebox">
-                    <div className="flex items-center">
-                      <Avatar className="flex-shrink-0" size={26} src={side}>{side}</Avatar>
-                    </div>
-                    <div className="ml-2 u-line-1" style={{maxWidth: "100px"}}>{name}</div>
-                  </div>
-                </Option>
-              )
-            }
-          </Select>
+          <SidePicker dialog={dialog} />
         </div>
         <div className="flex items-center" >
           <span className="ml-2 w-8">延迟</span>
           <InputNumber
             style={{width: "70px"}}
             size={'small'}
-            defaultValue={defaultDelay}
+            value={dialog.delay}
             min={0} max={100} step={0.1} precision={2}
             onChange={e => setContent(dialog, { delay: e }) }
           />
@@ -84,6 +59,8 @@ export default function CDialog({ index, dialog }: CDialogProps) {
           onChange={e => setContent(dialog, { text: e.target.value })}
         />
       </div>
-    </div>
+    </>
   );
 }
+
+export default memo(CDialog);

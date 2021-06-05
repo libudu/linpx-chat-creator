@@ -4,17 +4,24 @@ import { Button } from 'antd-mobile';
 import { IDialog, IContent } from '@/pages/types';
 
 import Dialog from './components/Dialog';
+import InsertContent from './components/InsertContent';
 
 export default function ContentPage(){
-  const { contents, insertDialog } = useModel('contents');
+  const {
+    contents,
+    insertDialog,
+  } = useModel('contents');
 
   return (
-    <>
+    <div className="px-4 w-full h-full">
       {
-        contents.map((content, index)=>{
-          const id = content.id;
-          return <Content key={id} index={index} content={content} />;
-        })
+        contents.map((content, index) => (<>
+          <InsertContent key={`i-${index}`} index={index} newContent={insertDialog} />
+          <Content
+            key={`c-${content.id}`}
+            content={content}
+          />
+        </>))
       }
       <Button
         type="ghost"
@@ -24,27 +31,21 @@ export default function ContentPage(){
       >
         新建对话
       </Button>
-    </>
+    </div>
   );
 }
 
-interface IRenderContent{
-  index: number;
-  content:IContent;
+interface IRenderContent {
+  content: IContent;
 }
 
-export function Content({ index, content }:IRenderContent){
+export function Content({ content }: IRenderContent) {
   // @ts-ignore
   const { type } = content;
   // 没有type参数，是对话
   if(!type) {
     const dialog = content as IDialog;
-    return (
-      <Dialog
-        index={index}
-        dialog={dialog}
-      />
-    );
+    return <Dialog dialog={dialog} />;
   }
   return null;
 }
